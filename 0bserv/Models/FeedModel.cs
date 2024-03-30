@@ -47,6 +47,5 @@
         [Required]
         public DateTime PublishDate { get; set; }
 
-        // Altre proprietà se necessario
     }
 }
