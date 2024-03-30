@@ -45,16 +45,5 @@
       "applicationUrl": "http://localhost:49958",
       "sslPort": 44317
     }
-  },
-  "ConnectionStrings": {
-      "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=ObservDb;Trusted_Connection=True;MultipleActiveResultSets=true"
-    },
-    "Logging": {
-      "LogLevel": {
-        "Default": "Information",
-        "Microsoft": "Warning",
-        "Microsoft.Hosting.Lifetime": "Information"
-      }
-    },
-    "AllowedHosts": "*"  
+  }
 }
