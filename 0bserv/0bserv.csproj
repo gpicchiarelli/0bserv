@@ -1,50 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>_0bserv</RootNamespace>
-    <UserSecretsId>428e75f5-634c-4a7c-93f4-dfe1781726e4</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>.</DockerfileContext>
-    <PackageProjectUrl>http://github.com/gpicchiarelli/0bserv</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <NeutralLanguage>it</NeutralLanguage>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <SignAssembly>False</SignAssembly>
-    <RepositoryUrl>https://github.com/gpicchiarelli/0bserv.git</RepositoryUrl>
-    <Copyright>Giacomo Picchiarelli</Copyright>
-    <Description>News feed reader</Description>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<TargetFramework>net8.0</TargetFramework>
+	<Nullable>enable</Nullable>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<RootNamespace>_0bserv</RootNamespace>
+	<UserSecretsId>428e75f5-634c-4a7c-93f4-dfe1781726e4</UserSecretsId>
+	<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	<DockerfileContext>.</DockerfileContext>
+	<PackageProjectUrl>http://github.com/gpicchiarelli/0bserv</PackageProjectUrl>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<NeutralLanguage>it</NeutralLanguage>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<SignAssembly>False</SignAssembly>
+	<RepositoryUrl>https://github.com/gpicchiarelli/0bserv.git</RepositoryUrl>
+	<Copyright>Giacomo Picchiarelli</Copyright>
+	<Description>News feed reader</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
-    <PackageReference Include="System.ServiceModel.Syndication" Version="8.0.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.3" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3">
+	  <PrivateAssets>all</PrivateAssets>
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+	<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.0" />
+	<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+	<PackageReference Include="System.ServiceModel.Syndication" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+	<Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
+	<None Include="..\LICENSE">
+	  <Pack>True</Pack>
+	  <PackagePath>\</PackagePath>
+	</None>
+	<None Include="..\README.md">
+	  <Pack>True</Pack>
+	  <PackagePath>\</PackagePath>
+	</None>
   </ItemGroup>
 
 </Project>
