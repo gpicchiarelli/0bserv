@@ -14,7 +14,6 @@ namespace Observ.Models
         public DbSet<RssArticle> Articles { get; set; }
         public DbSet<WebSiteItem> Sites { get; set; }
         public DbSet<WebArticle> WArticles { get; set; }
-
     }
 
     public class WebSiteItem
