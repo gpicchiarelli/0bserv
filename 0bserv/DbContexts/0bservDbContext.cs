@@ -47,6 +47,9 @@ namespace _0bserv.DbContexts
                 .HasMaxLength(255);
             _ = modelBuilder.Entity<FeedContent>()
                 .HasIndex(f => f.PublishDate);
+            _=  modelBuilder.Entity<RssFeed>()
+                .HasIndex(feed => feed.Url)
+                .IsUnique();
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
         public void EnsureDatabaseCreated()
