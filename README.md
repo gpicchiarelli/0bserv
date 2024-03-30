@@ -17,11 +17,12 @@
 Prima di tutto, assicurati di avere installato .NET Core SDK sul tuo sistema. Puoi scaricarlo da qui.
 
 Clona il repository:
-'''
+ ```bash
 git clone https://github.com/gpicchiarelli/0bserv.git
-'''
+ ```
 
 Naviga nella directory del progetto:
+
 '''
 cd 0bserv
 '''
