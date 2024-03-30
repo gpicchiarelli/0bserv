@@ -13,6 +13,7 @@ namespace _0bserv.Pages
         private readonly _0bservDbContext _dbContext;
         public int PageIndex = 0;
         public int TotalPages = 0;
+        public Uri Url { get; set; }
 
         public RssFeedModel(_0bservDbContext dbContext)
         {
