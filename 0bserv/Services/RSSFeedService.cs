@@ -1,9 +1,34 @@
 ﻿using Observ.Models;
 using System.Xml;
-using Microsoft.SyndicationFeed;
+using System.ServiceModel.Syndication;
 
 namespace _0bserv.Services
 {
+    public class RSSFeedBackgroundService : BackgroundService
+    {
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IEnumerable<RssFeed> _rssFeeds;
+
+        public RSSFeedBackgroundService(IServiceScopeFactory scopeFactory, IEnumerable<RssFeed> rssFeeds)
+        {
+            _scopeFactory = scopeFactory;
+            _rssFeeds = rssFeeds;
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    var newsAggregatorService = scope.ServiceProvider.GetRequiredService<NewsAggregatorService>();
+                    await newsAggregatorService.AggregateNewsFromRssFeeds(_rssFeeds);
+                }
+                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+            }
+        }
+    }
+
     public class NewsAggregatorService
     {
         private readonly ApplicationDbContext _context;
@@ -21,7 +46,7 @@ namespace _0bserv.Services
 
                 foreach (var item in syndicationFeed.Items)
                 {
-                    var article = new Article
+                    var article = new RssArticle
                     {
                         Title = item.Title.Text,
                         Description = item.Summary.Text,
@@ -43,29 +68,6 @@ namespace _0bserv.Services
             using (var reader = XmlReader.Create(url))
             {
                 return await Task.Run(() => SyndicationFeed.Load(reader));
-            }
-        }
-    }
-
-    public class RSSFeedBackgroundService : BackgroundService
-    {
-        private readonly IServiceScopeFactory _scopeFactory;
-
-        public RSSFeedBackgroundService(IServiceScopeFactory scopeFactory)
-        {
-            _scopeFactory = scopeFactory;
-        }
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                using (var scope = _scopeFactory.CreateScope())
-                {
-                    var newsAggregatorService = scope.ServiceProvider.GetRequiredService<NewsAggregatorService>();
-                    await newsAggregatorService.AggregateNewsFromRssFeeds();
-                }
-                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
             }
         }
     }
