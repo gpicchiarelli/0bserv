@@ -23,14 +23,14 @@ git clone https://github.com/gpicchiarelli/0bserv.git
 
 Naviga nella directory del progetto:
 
-'''
+ ```bash
 cd 0bserv
-'''
+ ```
 
 Avvia l’applicazione:
-'''
+ ```bash
 dotnet run
-'''
+ ```
 
 ## Licenza
 Questo progetto è rilasciato sotto la Licenza MIT.
