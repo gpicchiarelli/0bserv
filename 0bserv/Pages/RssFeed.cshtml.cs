@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Xml;
 using System.ServiceModel.Syndication;
+using System.Linq;
+using System.Security.Policy;
 
 namespace _0bserv.Pages
 {
@@ -24,14 +26,22 @@ namespace _0bserv.Pages
         }
         public async Task OnPostAsync()
         {
-            var _url = Request.Form["Url"];
+            string _url = Request.Form["Url"];
+            _url = _url.ToLower().Trim();
             if ((!string.IsNullOrEmpty(_url)) && IsValidRssFeed(_url))
             {
                 try
                 {
                     var rssFeed = new RssFeed { Url = _url };
-                    _dbContext.RssFeeds.Add(rssFeed);
-                    await _dbContext.SaveChangesAsync();
+                    if (_dbContext.RssFeeds.FirstOrDefault(feed => feed.Url == _url) is null)
+                    {
+                        _dbContext.RssFeeds.Add(rssFeed);
+                        await _dbContext.SaveChangesAsync();
+                    }
+                    else 
+                    {
+                        ErrorMessage = "URL già presente.";
+                    }
                 }
                 catch (Exception e) { ErrorMessage = e.ToString(); }
             }
@@ -40,6 +50,7 @@ namespace _0bserv.Pages
                 // Gestione dell'errore se l'URL è vuoto
                 ErrorMessage = "Inserire un URL valido.";
             }
+            OnGet();
         }
 
         public bool IsValidRssFeed(string url)
