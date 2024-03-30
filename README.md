@@ -30,3 +30,6 @@ Avvia l’applicazione:
 '''
 dotnet run
 '''
+
+## Licenza
+Questo progetto è rilasciato sotto la Licenza MIT.
