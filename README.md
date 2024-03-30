@@ -13,7 +13,7 @@
 - Fornisce un'interfaccia web per la visualizzazione e la navigazione delle notizie e degli articoli.
 - Gestisce tutti i dati tramite un database relazionale.
 
-Installazione
+## Installazione
 Prima di tutto, assicurati di avere installato .NET Core SDK sul tuo sistema. Puoi scaricarlo da qui.
 
 Clona il repository:
