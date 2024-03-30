@@ -54,7 +54,6 @@ namespace Observ.Models
         public string Link { get; set; }
         public string Author { get; set; }
         public DateTime PublishDate { get; set; }
-
         public int RssFeedId { get; set; }
         public RssFeed RssFeed { get; set; }
     }
