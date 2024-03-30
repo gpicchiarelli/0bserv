@@ -1,4 +1,6 @@
+using _0bserv.DbContexts;
 using Microsoft.AspNetCore.Authentication.Negotiate;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,7 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = options.DefaultPolicy;
 });
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<_0bserv.DbContexts._0bservDbContext>();
 
 var app = builder.Build();
 
