@@ -33,10 +33,10 @@
     <nav aria-label="Pagination">
         <ul class="pagination">
             <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
-                <a class="page-link" href="?pageIndex=1">First</a>
+                <a class="page-link" href="?pageIndex=1">Primo</a>
             </li>
             <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
-                <a class="page-link" href="?pageIndex=@(Model.PageIndex - 1)">Previous</a>
+                <a class="page-link" href="?pageIndex=@(Model.PageIndex - 1)">Precedente</a>
             </li>
             @for (int i = 1; i <= Model.TotalPages; i++)
             {
@@ -45,10 +45,10 @@
                 </li>
             }
             <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
-                <a class="page-link" href="?pageIndex=@(Model.PageIndex + 1)">Next</a>
+                <a class="page-link" href="?pageIndex=@(Model.PageIndex + 1)">Successivo</a>
             </li>
             <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
-                <a class="page-link" href="?pageIndex=@Model.TotalPages">Last</a>
+                <a class="page-link" href="?pageIndex=@Model.TotalPages">Ultimo</a>
             </li>
         </ul>
     </nav>
