@@ -8,6 +8,7 @@ using System.Xml;
 using System.ServiceModel.Syndication;
 using System.Linq;
 using System.Security.Policy;
+using System.Drawing.Printing;
 
 namespace _0bserv.Pages
 {
@@ -16,9 +17,11 @@ namespace _0bserv.Pages
         public string ErrorMessage { get; set; }
         public List<RssFeed> FeedList { get; set; }
         private readonly _0bservDbContext _dbContext;
-        public int PageIndex = 0;
-        public int TotalPages = 0;
+        public int PageIndex = 1;
+        public int TotalPages = 1;
         public string? Url { get; set; }
+        private const int DefaultPageSize = 50; // Numero predefinito di elementi per pagina
+
 
         public RssFeedModel(_0bservDbContext dbContext)
         {
@@ -26,7 +29,8 @@ namespace _0bserv.Pages
         }
         public async Task OnPostAsync()
         {
-            string _url = Request.Form["Url"];
+            string _url = Request.Form["Url"];          
+          
             _url = _url.ToLower().Trim();
             if ((!string.IsNullOrEmpty(_url)) && IsValidRssFeed(_url))
             {
@@ -76,7 +80,26 @@ namespace _0bserv.Pages
         {
             try
             {
-                FeedList = _dbContext.RssFeeds.ToList();
+                var pageSize = DefaultPageSize;
+                string pind = Request.Query["pageIndex"];
+                if (pind is null) pind = "1";
+                int.TryParse(pind,out PageIndex);
+
+                // Calcola l'offset per il record da cui iniziare
+                int skipAmount = (PageIndex - 1) * pageSize;
+
+                int totalItemCount = _dbContext.RssFeeds.Count();
+                TotalPages = (int)Math.Ceiling((double)totalItemCount / pageSize);
+
+
+                // Esegui la query per recuperare i dati paginati
+                FeedList = _dbContext.RssFeeds
+                                    .OrderBy(x => x.Id) // Ordina per qualche criterio
+                                    .Skip(skipAmount)
+                                    .Take(pageSize)
+                                    .ToList();
+
+                //FeedList = _dbContext.RssFeeds.ToList();
             }
             catch (Exception ex) { ErrorMessage = ex.ToString(); }
         }
