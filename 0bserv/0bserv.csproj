@@ -17,6 +17,8 @@
 	<RepositoryUrl>https://github.com/gpicchiarelli/0bserv.git</RepositoryUrl>
 	<Copyright>Giacomo Picchiarelli</Copyright>
 	<Description>News feed reader</Description>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Deterministic>false</Deterministic>
   </PropertyGroup>
 
   <ItemGroup>

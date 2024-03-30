@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
+
+[assembly: AssemblyVersion("1.0.*")]
+
 
 var builder = WebApplication.CreateBuilder(args);
 
