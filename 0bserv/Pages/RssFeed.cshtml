@@ -1,0 +1,59 @@
+﻿@page
+@model RssFeedModel
+@{
+    ViewData["Title"] = "Gestione Feed RSS";    
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @Model.ErrorMessage
+    </div>
+}
+
+<form method="post">
+    <div class="mb-3">
+        <label for="url" class="form-label">URL del feed RSS:</label>
+        <input type="text" class="form-control" id="url" name="Url" placeholder="Inserisci l'URL del feed RSS" value="@Model.Url">
+    </div>
+    <button type="submit" class="btn btn-primary">Aggiungi Feed</button>
+</form>
+
+@if (Model.FeedList != null && Model.FeedList.Any())
+{
+    <h2>Lista dei Feed RSS</h2>
+    <ul>
+        @foreach (var feed in Model.FeedList)
+        {
+            <li>@feed.Url</li>
+        }
+    </ul>
+    <nav aria-label="Pagination">
+        <ul class="pagination">
+            <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                <a class="page-link" href="?pageIndex=1">First</a>
+            </li>
+            <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                <a class="page-link" href="?pageIndex=@(Model.PageIndex - 1)">Previous</a>
+            </li>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(Model.PageIndex == i ? "active" : "")">
+                    <a class="page-link" href="?pageIndex=@i">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="?pageIndex=@(Model.PageIndex + 1)">Next</a>
+            </li>
+            <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="?pageIndex=@Model.TotalPages">Last</a>
+            </li>
+        </ul>
+    </nav>
+}
+else
+{
+    <p>Nessun feed RSS presente.</p>
+}

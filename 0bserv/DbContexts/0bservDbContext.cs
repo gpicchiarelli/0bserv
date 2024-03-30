@@ -11,22 +11,27 @@ namespace _0bserv.DbContexts
     {
         public DbSet<RssFeed> RssFeeds { get; set; }
         public DbSet<FeedContent> FeedContents { get; set; }
+        private readonly IConfiguration _configuration;
 
-        public _0bservDbContext(DbContextOptions<_0bservDbContext> options) : base(options)
+        public _0bservDbContext(DbContextOptions<_0bservDbContext> options, IConfiguration configuration) : base(options)
         {
-
+            _configuration = configuration;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var f = System.Configuration.ConfigurationManager.ConnectionStrings["MSSQL"].ConnectionString;
-            optionsBuilder.UseSqlServer(f);
+            var connectionString = _configuration.GetConnectionString("MSSQL");
+            optionsBuilder.UseSqlServer(connectionString);
             optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information); // Abilita il logging delle query su Console
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Aggiungi DbSets programmaticamente
+            modelBuilder.Entity<RssFeed>().ToTable("RssFeeds");
+            modelBuilder.Entity<FeedContent>().ToTable("FeedContents");
 
             _ = modelBuilder.Entity<RssFeed>()
                 .HasKey(r => r.Id);
@@ -43,6 +48,10 @@ namespace _0bserv.DbContexts
             _ = modelBuilder.Entity<FeedContent>()
                 .HasIndex(f => f.PublishDate);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+        public void EnsureDatabaseCreated()
+        {
+            Database.EnsureCreated();
         }
     }
 }
