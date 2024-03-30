@@ -1,29 +1,22 @@
-/* Impostazioni di base */
 html {
-    font-size: 16px;
+  font-size: 14px;
 }
 
 @media (min-width: 768px) {
-    html {
-        font-size: 18px;
-    }
+  html {
+    font-size: 16px;
+  }
 }
 
-/* Focus sugli elementi interattivi */
-.btn:focus,
-.btn:active:focus,
-.btn-link.nav-link:focus,
-.form-control:focus,
-.form-check-input:focus {
-    box-shadow: 0 0 0 0.2rem rgba(37, 140, 251, 0.25), 0 0 0 0.3rem rgba(37, 140, 251, 0.5);
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-/* Layout e posizionamento */
 html {
-    position: relative;
-    min-height: 100%;
+  position: relative;
+  min-height: 100%;
 }
 
 body {
-    margin-bottom: 60px; /* Aggiunge spazio inferiore per i footer */
+  margin-bottom: 60px;
 }

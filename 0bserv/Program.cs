@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Negotiate;
-using _0bserv.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,8 +13,6 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = options.DefaultPolicy;
 });
 builder.Services.AddRazorPages();
-builder.Services.AddHostedService<RSSFeedBackgroundService>();
-
 
 var app = builder.Build();
 
