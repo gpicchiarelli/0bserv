@@ -17,7 +17,14 @@ namespace _0bserv.DbContexts
         {
             _configuration = configuration;
         }
+        //scaffolding fix
+        public _0bservDbContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<_0bservDbContext>();
+            optionsBuilder.UseSqlServer("Server=localhost;Database=0bserv;Trusted_Connection=True;MultipleActiveResultSets=true");
 
+            return new _0bservDbContext(optionsBuilder.Options,_configuration);
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var connectionString = _configuration.GetConnectionString("MSSQL");
