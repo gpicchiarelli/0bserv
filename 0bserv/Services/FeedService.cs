@@ -18,7 +18,7 @@ namespace _0bserv.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("MyHostedService is starting.");
+            _logger.LogInformation("FeedService is starting.");
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -40,7 +40,7 @@ namespace _0bserv.Services
                 await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
             }
 
-            _logger.LogInformation("MyHostedService is stopping.");
+            _logger.LogInformation("FeedService is stopping.");
         }
 
         private async Task ProcessFeed(FeedModel feed, _0bservDbContext dbContext, CancellationToken stoppingToken)
@@ -76,11 +76,11 @@ namespace _0bserv.Services
 
                                 dbContext.FeedContents.Add(newFeedContent);
                                 _ = await dbContext.SaveChangesAsync();
-                                _logger.LogInformation($"New feed content added: {newFeedContent.Title}");
+                                _logger.LogInformation($"Aggiunto contenuto: {newFeedContent.Title}");
                             }
                             else
                             {
-                                _logger.LogInformation($"Feed content already exists: {existingFeedContent.Title}");
+                                _logger.LogInformation($"Contenuto già esistente: {existingFeedContent.Title}");
                             }
                         }
 
