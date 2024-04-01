@@ -41,7 +41,6 @@ using (var scope = app.Services.CreateAsyncScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<_0bservDbContext>();
     dbContext.Database.EnsureCreated();
 }
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
