@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ServiceModel.Syndication;
+using System.Xml;
+using _0bserv.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using _0bserv.Models;
-using System.ServiceModel.Syndication;
-using System.Xml;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Policy;
-using Microsoft.AspNetCore.Identity.Data;
 
-namespace _0bserv
+namespace _0bserv.Pages.FeedsMgr
 {
     public class CreateModel : PageModel
     {
-        private readonly _0bserv.Models._0bservDbContext _context;
+        private readonly _0bservDbContext _context;
         public string ErrorMessage = "";
-        public String Url;
+        public new string Url;
 
-        public CreateModel(_0bserv.Models._0bservDbContext context)
+        public CreateModel(_0bservDbContext context)
         {
             _context = context;
             _ = _context.RssFeeds.ToListAsync();
@@ -33,8 +26,8 @@ namespace _0bserv
         }
 
         [BindProperty]
-        public string RssFeed { get; set; } = default!;        
-        
+        public string RssFeed { get; set; } = default!;
+
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
@@ -43,8 +36,8 @@ namespace _0bserv
             {
                 if (_context.RssFeeds.FirstOrDefault(feed => feed.Url == RssFeed) is null)
                 {
-                    _context.RssFeeds.Add(new FeedModel { Url = RssFeed });
-                    await _context.SaveChangesAsync();
+                    _ = _context.RssFeeds.Add(new FeedModel { Url = RssFeed });
+                    _ = await _context.SaveChangesAsync();
                     return RedirectToPage("./Index");
                 }
                 else
@@ -52,10 +45,10 @@ namespace _0bserv
                     ErrorMessage = "Feed già presente";
                 }
             }
-            else 
+            else
             {
                 ErrorMessage = "URL non valido";
-            }            
+            }
             return Page();
         }
 
@@ -64,8 +57,8 @@ namespace _0bserv
             try
             {
                 // Effettua una richiesta per ottenere il feed RSS dall'URL
-                var reader = XmlReader.Create(url);
-                var feed = SyndicationFeed.Load(reader);
+                XmlReader reader = XmlReader.Create(url);
+                SyndicationFeed feed = SyndicationFeed.Load(reader);
                 reader.Close();
 
                 // Se non ci sono eccezioni, consideriamo il feed valido
