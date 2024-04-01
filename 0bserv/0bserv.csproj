@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ConfigHelper.cs" />
+	<Compile Remove="ConfigHelper.cs" />
   </ItemGroup>
 
   <ItemGroup>
