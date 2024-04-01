@@ -39,7 +39,6 @@ namespace _0bserv.Services
                 // Attendere 5 minuti prima di controllare nuovamente i feed
                 await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
             }
-
             _logger.LogInformation("FeedService is stopping.");
         }
 
@@ -49,7 +48,6 @@ namespace _0bserv.Services
             {
                 _logger.LogInformation($"Processing feed: {feed.Url}");
 
-                // Carica il feed RSS utilizzando SyndicationFeed
                 using (var xmlReader = XmlReader.Create(feed.Url))
                 {
                     var syndicationFeed = SyndicationFeed.Load(xmlReader);
@@ -57,8 +55,13 @@ namespace _0bserv.Services
                     {
                         foreach (var item in syndicationFeed.Items)
                         {
-                            // Controlla se l'elemento del feed è già stato memorizzato
                             var feedLink = item.Links.FirstOrDefault()?.Uri?.AbsoluteUri;
+
+                            // Ottenere l'autore e la data di pubblicazione in modo sicuro
+                            var autore = item.Authors.FirstOrDefault()?.Name ?? feed.Url;
+                            var dataPubblicazione = item.PublishDate.DateTime != default ? item.PublishDate.DateTime : DateTime.Now;
+
+                            // Controlla se l'elemento del feed è già stato memorizzato
                             var existingFeedContent = await dbContext.FeedContents.FirstOrDefaultAsync(fc => fc.Link == feedLink);
 
                             if (existingFeedContent == null)
@@ -69,13 +72,12 @@ namespace _0bserv.Services
                                     RssFeed = feed,
                                     Title = item.Title.Text,
                                     Description = item.Summary.Text,
-                                    Link = item.Links.FirstOrDefault()?.Uri.AbsoluteUri,
-                                    Author = item.Authors.FirstOrDefault()?.Name,
-                                    PublishDate = item.PublishDate.DateTime
+                                    Link = feedLink,
+                                    Author = autore,
+                                    PublishDate = dataPubblicazione
                                 };
 
                                 dbContext.FeedContents.Add(newFeedContent);
-                                _ = await dbContext.SaveChangesAsync();
                                 _logger.LogInformation($"Aggiunto contenuto: {newFeedContent.Title}");
                             }
                             else
@@ -86,7 +88,7 @@ namespace _0bserv.Services
 
                         await dbContext.SaveChangesAsync(stoppingToken);
                     }
-                }
+                }                
             }
             catch (Exception ex)
             {
