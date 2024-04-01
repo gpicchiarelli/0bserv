@@ -48,6 +48,7 @@ namespace _0bserv
                 else
                 {
                     ErrorMessage = "Feed già presente";
+                    return Page();
                 }
                 if (!ModelState.IsValid)
                 {
@@ -56,10 +57,10 @@ namespace _0bserv
             }
             else 
             {
-                
-            }
-            return Page();
-            //return RedirectToPage("./Index");
+                ErrorMessage = "URL non valido";
+                return Page();
+            }            
+            return RedirectToPage("./Index");
         }
 
         public bool IsValidRssFeed(string url)
