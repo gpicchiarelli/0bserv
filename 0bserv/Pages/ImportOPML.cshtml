@@ -1,4 +1,5 @@
 ﻿@page
+@attribute [RequestSizeLimitAttribute(268435456)]
 @model ImportOPMLModel
 @{
     ViewData["Title"] = "Importa OPML";
@@ -9,11 +10,11 @@
 <form enctype="multipart/form-data" method="post">
     <dl>
         <dt>
-            <label asp-for="OpmlFile">Seleziona il file OPML:</label>
+            <label asp-for="@Model.OpmlFile">Seleziona il file OPML:</label>
         </dt>
         <dd>
-            <input asp-for="OpmlFile" type="file">
-            <span asp-validation-for="OpmlFile"></span>
+            <input asp-for="@Model.OpmlFile" type="file">
+            <span asp-validation-for="@Model.OpmlFile"></span>
         </dd>
     </dl>
     <button type="submit" class="btn btn-primary">Importa</button>

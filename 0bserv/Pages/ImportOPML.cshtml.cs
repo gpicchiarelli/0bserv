@@ -29,7 +29,7 @@ namespace _0bserv.Pages
         {
             return Page();
         }
-
+        [HttpPost]
         public async Task<IActionResult> OnPostUploadAsync()
         {
             if (OpmlFile == null || OpmlFile.Length == 0)
