@@ -1,0 +1,21 @@
+﻿@page
+@model DettaglioItemModel
+@{
+    ViewData["Title"] = "Dettaglio Articolo";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">@Model.Contenuto.Titolo</h2>
+            <p class="card-text"><b>Autore:</b> @Model.Contenuto.Autore</p>
+            <p class="card-text"><b>Data di pubblicazione:</b> @Model.Contenuto.DataPubblicazione?.ToString("dd/MM/yyyy HH:mm")</p>
+            <hr />
+            <p class="card-text">@Model.Contenuto.Testo</p>
+            @if (!string.IsNullOrEmpty(Model.Contenuto.Collegamento))
+            {
+                <a href="@Model.Contenuto.Collegamento" class="btn btn-primary">Leggi di più</a>
+            }
+        </div>
+    </div>
+</div>
