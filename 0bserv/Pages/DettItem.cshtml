@@ -8,14 +8,23 @@
     <div class="card">
         <div class="card-body">
             <h2 class="card-title">@Model.Contenuto.Titolo</h2>
-            <p class="card-text"><b>Autore:</b> @Model.Contenuto.Autore</p>
-            <p class="card-text"><b>Data di pubblicazione:</b> @Model.Contenuto.DataPubblicazione?.ToString("dd/MM/yyyy HH:mm")</p>
+            <p class="card-text text-muted"><b>Scritto da:</b> @Model.Contenuto.Autore</p>
+            <p class="card-text text-muted"><b>Data di pubblicazione:</b> @Model.Contenuto.DataPubblicazione?.ToString("dd/MM/yyyy HH:mm")</p>
             <hr />
             <p class="card-text">@Model.Contenuto.Testo</p>
             @if (!string.IsNullOrEmpty(Model.Contenuto.Collegamento))
             {
-                <a href="@Model.Contenuto.Collegamento" class="btn btn-primary">Leggi di più</a>
+                <a href="@Model.Contenuto.Collegamento" class="btn btn-primary">Continua a leggere</a>
             }
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col">
+            <a href="javascript:history.back()" class="btn btn-outline-secondary">&lt; Torna Indietro</a>
+        </div>
+        <div class="col text-right">
+            <a href="mailto:?subject=@Model.Contenuto.Titolo&amp;body=@Model.Contenuto.Testo" class="btn btn-outline-info">Condividi via Email <i class="fas fa-share"></i></a>
         </div>
     </div>
 </div>
