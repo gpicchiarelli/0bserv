@@ -9,8 +9,8 @@ namespace _0bserv.DbContexts
 {
     public class _0bservDbContext : DbContext
     {
-        public DbSet<RssFeed> RssFeeds { get; set; }
-        public DbSet<FeedContent> FeedContents { get; set; }
+        public DbSet<FeedModel> RssFeeds { get; set; }
+        public DbSet<FeedContentModel> FeedContents { get; set; }
         private readonly IConfiguration _configuration;
 
         public _0bservDbContext(DbContextOptions<_0bservDbContext> options, IConfiguration configuration) : base(options)
@@ -44,24 +44,24 @@ namespace _0bserv.DbContexts
             base.OnModelCreating(modelBuilder);
 
             // Aggiungi DbSets programmaticamente
-            modelBuilder.Entity<RssFeed>().ToTable("RssFeeds");
-            modelBuilder.Entity<FeedContent>().ToTable("FeedContents");
+            modelBuilder.Entity<FeedModel>().ToTable("RssFeeds");
+            modelBuilder.Entity<FeedContentModel>().ToTable("FeedContents");
 
-            _ = modelBuilder.Entity<RssFeed>()
+            _ = modelBuilder.Entity<FeedModel>()
                 .HasKey(r => r.Id);
-            _ = modelBuilder.Entity<FeedContent>()
+            _ = modelBuilder.Entity<FeedContentModel>()
                 .HasKey(f => f.Id);
-            _ = modelBuilder.Entity<FeedContent>()
+            _ = modelBuilder.Entity<FeedContentModel>()
                 .HasOne(f => f.RssFeed)
                 .WithMany(r => r.Contents)
                 .HasForeignKey(f => f.RssFeedId);
-            _ = modelBuilder.Entity<RssFeed>()
+            _ = modelBuilder.Entity<FeedModel>()
                 .Property(r => r.Url)
                 .IsRequired()
                 .HasMaxLength(255);
-            _ = modelBuilder.Entity<FeedContent>()
+            _ = modelBuilder.Entity<FeedContentModel>()
                 .HasIndex(f => f.PublishDate);
-            _=  modelBuilder.Entity<RssFeed>()
+            _=  modelBuilder.Entity<FeedModel>()
                 .HasIndex(feed => feed.Url)
                 .IsUnique();
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

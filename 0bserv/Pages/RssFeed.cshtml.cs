@@ -15,7 +15,7 @@ namespace _0bserv.Pages
     public class RssFeedModel : PageModel
     {
         public string ErrorMessage { get; set; }
-        public List<RssFeed> FeedList { get; set; }
+        public List<FeedModel> FeedList { get; set; }
         private readonly _0bservDbContext _dbContext;
         public int PageIndex = 1;
         public int TotalPages = 1;
@@ -36,7 +36,7 @@ namespace _0bserv.Pages
             {
                 try
                 {
-                    var rssFeed = new RssFeed { Url = _url };
+                    var rssFeed = new FeedModel { Url = _url };
                     if (_dbContext.RssFeeds.FirstOrDefault(feed => feed.Url == _url) is null)
                     {
                         _dbContext.RssFeeds.Add(rssFeed);

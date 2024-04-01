@@ -1,20 +1,19 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace _0bserv.Models
 {
-    public class RssFeed
+    public class FeedModel
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
         [StringLength(255)]
-        public string Url { get; set; }
+        public required string Url { get; set; }
 
         // Altre proprietà se necessario
 
         // Relazione con il contenuto dei feed
-        public virtual ICollection<FeedContent> Contents { get; set; }
+        public virtual ICollection<FeedContentModel> Contents { get; set; }
     }
 }
