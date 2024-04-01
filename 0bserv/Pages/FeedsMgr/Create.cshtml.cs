@@ -10,6 +10,7 @@ using System.ServiceModel.Syndication;
 using System.Xml;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Policy;
+using Microsoft.AspNetCore.Identity.Data;
 
 namespace _0bserv
 {
@@ -22,6 +23,8 @@ namespace _0bserv
         public CreateModel(_0bserv.Models._0bservDbContext context)
         {
             _context = context;
+            _ = _context.RssFeeds.ToListAsync();
+
         }
 
         public IActionResult OnGet()
@@ -55,7 +58,8 @@ namespace _0bserv
             {
                 
             }
-            return RedirectToPage("./Index");
+            return Page();
+            //return RedirectToPage("./Index");
         }
 
         public bool IsValidRssFeed(string url)
