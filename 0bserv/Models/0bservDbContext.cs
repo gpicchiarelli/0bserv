@@ -1,8 +1,5 @@
-﻿using System.Configuration;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 
 namespace _0bserv.Models
 {
@@ -19,22 +16,22 @@ namespace _0bserv.Models
         //scaffolding fix
         public _0bservDbContext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<_0bservDbContext>();
-            optionsBuilder.UseSqlServer("Server=localhost;Database=0bserv;Trusted_Connection=True;MultipleActiveResultSets=true");
+            DbContextOptionsBuilder<_0bservDbContext> optionsBuilder = new();
+            _ = optionsBuilder.UseSqlServer("Server=localhost;Database=0bserv;Trusted_Connection=True;MultipleActiveResultSets=true");
 
-            return new _0bservDbContext(optionsBuilder.Options,_configuration);
+            return new _0bservDbContext(optionsBuilder.Options, _configuration);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = _configuration.GetConnectionString("MSSQL");
-            optionsBuilder.UseSqlServer(connectionString);
-            optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information); // Abilita il logging delle query su Console
+            string? connectionString = _configuration.GetConnectionString("MSSQL");
+            _ = optionsBuilder.UseSqlServer(connectionString);
+            _ = optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information); // Abilita il logging delle query su Console
         }
 
         public string GetConnectionString()
         {
             // retrieve App Service connection string
-            var myConnString = _configuration.GetConnectionString("MSSQL");
+            string? myConnString = _configuration.GetConnectionString("MSSQL");
             return myConnString;
         }
 
@@ -43,8 +40,8 @@ namespace _0bserv.Models
             base.OnModelCreating(modelBuilder);
 
             // Aggiungi DbSets programmaticamente
-            modelBuilder.Entity<FeedModel>().ToTable("RssFeeds");
-            modelBuilder.Entity<FeedContentModel>().ToTable("FeedContents");
+            _ = modelBuilder.Entity<FeedModel>().ToTable("RssFeeds");
+            _ = modelBuilder.Entity<FeedContentModel>().ToTable("FeedContents");
 
             _ = modelBuilder.Entity<FeedModel>()
                 .HasKey(r => r.Id);
@@ -60,14 +57,14 @@ namespace _0bserv.Models
                 .HasMaxLength(255);
             _ = modelBuilder.Entity<FeedContentModel>()
                 .HasIndex(f => f.PublishDate);
-            _=  modelBuilder.Entity<FeedModel>()
+            _ = modelBuilder.Entity<FeedModel>()
                 .HasIndex(feed => feed.Url)
                 .IsUnique();
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            _ = modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
         public void EnsureDatabaseCreated()
         {
-            Database.EnsureCreated();
+            _ = Database.EnsureCreated();
         }
     }
 }

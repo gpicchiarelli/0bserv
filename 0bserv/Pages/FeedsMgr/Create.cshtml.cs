@@ -36,7 +36,7 @@ namespace _0bserv.Pages.FeedsMgr
             {
                 if (_context.RssFeeds.FirstOrDefault(feed => feed.Url == RssFeed) is null)
                 {
-                    _ = _context.RssFeeds.Add(new FeedModel { Url = RssFeed });
+                    _ = _context.RssFeeds.Add(new FeedModel() { Url = RssFeed });
                     _ = await _context.SaveChangesAsync();
                     return RedirectToPage("./Index");
                 }

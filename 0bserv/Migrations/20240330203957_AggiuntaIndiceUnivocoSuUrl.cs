@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -11,7 +10,7 @@ namespace _0bserv.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "RssFeeds",
                 columns: table => new
                 {
@@ -21,10 +20,10 @@ namespace _0bserv.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RssFeeds", x => x.Id);
+                    _ = table.PrimaryKey("PK_RssFeeds", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
+            _ = migrationBuilder.CreateTable(
                 name: "FeedContents",
                 columns: table => new
                 {
@@ -39,8 +38,8 @@ namespace _0bserv.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FeedContents", x => x.Id);
-                    table.ForeignKey(
+                    _ = table.PrimaryKey("PK_FeedContents", x => x.Id);
+                    _ = table.ForeignKey(
                         name: "FK_FeedContents_RssFeeds_RssFeedId",
                         column: x => x.RssFeedId,
                         principalTable: "RssFeeds",
@@ -48,17 +47,17 @@ namespace _0bserv.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "IX_FeedContents_PublishDate",
                 table: "FeedContents",
                 column: "PublishDate");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "IX_FeedContents_RssFeedId",
                 table: "FeedContents",
                 column: "RssFeedId");
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "IX_RssFeeds_Url",
                 table: "RssFeeds",
                 column: "Url",
@@ -68,10 +67,10 @@ namespace _0bserv.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "FeedContents");
 
-            migrationBuilder.DropTable(
+            _ = migrationBuilder.DropTable(
                 name: "RssFeeds");
         }
     }

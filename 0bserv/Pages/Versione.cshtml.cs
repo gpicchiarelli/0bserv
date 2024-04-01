@@ -1,12 +1,8 @@
 ﻿using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Cryptography;
-using Microsoft.CodeAnalysis;
-using System;
-using System.Runtime.InteropServices;
 
 namespace _0bserv.Pages
 {
@@ -31,9 +27,9 @@ namespace _0bserv.Pages
             // Calcola l'hash SHA-256 dell'assembly principale
             string assemblyPath = Assembly.GetEntryAssembly().Location;
 
-            using var sha512 = System.Security.Cryptography.SHA512.Create();
-            var bytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(assemblyPath));
-            string sha512Hash =  Convert.ToBase64String(bytes).ToString();
+            using SHA512 sha512 = System.Security.Cryptography.SHA512.Create();
+            byte[] bytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(assemblyPath));
+            string sha512Hash = Convert.ToBase64String(bytes).ToString();
 
             string environment = "Sviluppo"; // Modifica in base all'ambiente di esecuzione
 

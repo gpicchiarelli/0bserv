@@ -1,13 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using _0bserv.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Xml;
 using System.ServiceModel.Syndication;
-using System.Linq;
-using System.Security.Policy;
-using System.Drawing.Printing;
+using System.Xml;
+using _0bserv.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace _0bserv.Pages
 {
@@ -18,7 +12,7 @@ namespace _0bserv.Pages
         private readonly _0bservDbContext _dbContext;
         public int PageIndex = 1;
         public int TotalPages = 1;
-        public string? Url { get; set; }
+        public new string? Url { get; set; }
         private const int DefaultPageSize = 50; // Numero predefinito di elementi per pagina
 
 
@@ -28,20 +22,21 @@ namespace _0bserv.Pages
         }
         public async Task OnPostAsync()
         {
-            string _url = Request.Form["Url"];          
-          
+            string _url = Request.Form["Url"];
+
             _url = _url.ToLower().Trim();
             if ((!string.IsNullOrEmpty(_url)) && IsValidRssFeed(_url))
             {
                 try
                 {
-                    var rssFeed = new FeedModel { Url = _url };
+                    FeedModel feedModel = new() { Url = _url };
+                    FeedModel rssFeed = feedModel;
                     if (_dbContext.RssFeeds.FirstOrDefault(feed => feed.Url == _url) is null)
                     {
-                        _dbContext.RssFeeds.Add(rssFeed);
-                        await _dbContext.SaveChangesAsync();
+                        _ = _dbContext.RssFeeds.Add(rssFeed);
+                        _ = await _dbContext.SaveChangesAsync();
                     }
-                    else 
+                    else
                     {
                         ErrorMessage = "URL già presente.";
                     }
@@ -61,8 +56,8 @@ namespace _0bserv.Pages
             try
             {
                 // Effettua una richiesta per ottenere il feed RSS dall'URL
-                var reader = XmlReader.Create(url);
-                var feed = SyndicationFeed.Load(reader);
+                XmlReader reader = XmlReader.Create(url);
+                SyndicationFeed feed = SyndicationFeed.Load(reader);
                 reader.Close();
 
                 // Se non ci sono eccezioni, consideriamo il feed valido
@@ -79,10 +74,10 @@ namespace _0bserv.Pages
         {
             try
             {
-                var pageSize = DefaultPageSize;
+                int pageSize = DefaultPageSize;
                 string pind = Request.Query["pageIndex"];
-                if (pind is null) pind = "1";
-                int.TryParse(pind,out PageIndex);
+                pind ??= "1";
+                _ = int.TryParse(pind, out PageIndex);
 
                 // Calcola l'offset per il record da cui iniziare
                 int skipAmount = (PageIndex - 1) * pageSize;
