@@ -1,0 +1,35 @@
+﻿@page
+@model FeedIndexModel
+
+@{
+    ViewData["Title"] = "Lista feed";
+}
+
+<h1>Lista feed</h1>
+
+<p>
+    <a asp-page="Create">Inserisci nuovo</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RssFeed[0].Url)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.RssFeed) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Url)
+            </td>
+            <td>
+                <a asp-page="./Details" asp-route-id="@item.Id">Dettaglio</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Cancella</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
