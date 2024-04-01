@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -27,28 +27,39 @@ namespace _0bserv.Pages
             var opmlFile = Request.Form.Files.FirstOrDefault();
             if (opmlFile == null || opmlFile.Length == 0)
             {
-                ViewBag.Message = "File non valido o vuoto.";
+                ViewBag.Message = "Nessun file selezionato.";
                 return View("Index");
             }
 
-            List<string> feedUrls = new List<string>();
-
-            using (var stream = new StreamReader(opmlFile.OpenReadStream()))
+            if (opmlFile.ContentType != "text/xml")
             {
-                XDocument doc = XDocument.Load(stream);
-                feedUrls = (from outline in doc.Descendants("outline")
-                            select outline.Attribute("xmlUrl")?.Value).ToList();
+                ViewBag.Message = "Il file non è un file OPML valido.";
+                return View("Index");
             }
 
-            // Salva gli URL dei feed nel database o esegui altre operazioni
-            foreach (var url in feedUrls)
+            try
             {
-                _context.RssFeeds.Add(new FeedModel { Url = url });
-            }
-            _context.SaveChanges();
+                using (var stream = new StreamReader(opmlFile.OpenReadStream()))
+                {
+                    XDocument doc = XDocument.Load(stream);
+                    var feedUrls = (from outline in doc.Descendants("outline")
+                                    select outline.Attribute("xmlUrl")?.Value).ToList();
 
-            ViewBag.Message = $"File OPML importato correttamente. Trovati {feedUrls.Count} feed.";
-            return View("Index");
+                    foreach (var url in feedUrls)
+                    {
+                        _context.RssFeeds.Add(new FeedModel { Url = url });
+                    }
+                    _context.SaveChanges();
+
+                    ViewBag.Message = $"File OPML importato correttamente. Trovati {feedUrls.Count} feed.";
+                    return View("Index");
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = $"Si è verificato un errore durante l'importazione del file OPML: {ex.Message}";
+                return View("Index");
+            }
         }
     }
 }

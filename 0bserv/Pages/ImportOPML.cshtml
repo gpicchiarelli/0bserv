@@ -1,19 +1,20 @@
-﻿@{
+﻿@page
+@model ImportOPMLModel
+@{
     ViewData["Title"] = "Importa OPML";
 }
 
 <h2>Importa OPML</h2>
 
-@using (Html.BeginForm("Upload", "ImportOPML", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
+<form method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label for="opmlFile">Seleziona il file OPML:</label>
-        <input type="file" name="opmlFile" id="opmlFile" class="form-control-file">
+        <input type="file" name="opmlFile" id="opmlFile" class="form-control-file" accept=".opml">
     </div>
     <button type="submit" class="btn btn-primary">Importa</button>
-}
+</form>
 
-@if (ViewBag.Message != null)
+@if (!string.IsNullOrEmpty(ViewBag.Message))
 {
     <div class="alert alert-info mt-3" role="alert">
         @ViewBag.Message
