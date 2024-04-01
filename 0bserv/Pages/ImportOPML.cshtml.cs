@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using _0bserv.Models;
 using System.Xml.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace _0bserv.Pages
 {
@@ -29,8 +30,9 @@ namespace _0bserv.Pages
         {
             return Page();
         }
+
         [HttpPost]
-        public async Task<IActionResult> OnPostUploadAsync()
+        public async Task<IActionResult> OnPostUploadAsync(IFormFile OpmlFile)
         {
             if (OpmlFile == null || OpmlFile.Length == 0)
             {
@@ -55,14 +57,37 @@ namespace _0bserv.Pages
                                 select outline.Attribute("xmlUrl")?.Value).ToList();
                 }
 
+                var newFeeds = new List<string>();
+                var existingFeeds = new List<string>();
+
                 foreach (var url in feedUrls)
                 {
-                    _context.RssFeeds.Add(new FeedModel { Url = url });
+                    if (_context.RssFeeds.Any(feed => feed.Url == url))
+                    {
+                        existingFeeds.Add(url);
+                    }
+                    else
+                    {
+                        newFeeds.Add(url);
+                        _context.RssFeeds.Add(new FeedModel { Url = url });
+                    }
                 }
 
                 await _context.SaveChangesAsync();
 
-                TempData["Message"] = $"File OPML importato correttamente. Trovati {feedUrls.Count} feed.";
+                if (newFeeds.Any())
+                {
+                    TempData["Message"] = $"File OPML importato correttamente. Trovati {newFeeds.Count} nuovi feed.";
+                }
+                else
+                {
+                    TempData["Message"] = $"File OPML importato correttamente. Non sono stati trovati nuovi feed.";
+                }
+
+                if (existingFeeds.Any())
+                {
+                    TempData["ExistingFeeds"] = $"I seguenti feed sono già presenti nel database: {string.Join(", ", existingFeeds)}";
+                }
             }
             catch (Exception ex)
             {
