@@ -31,14 +31,14 @@ namespace _0bserv
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
             if (IsValidRssFeed(RssFeed.Url))
             {
                 _context.RssFeeds.Add(RssFeed);
                 await _context.SaveChangesAsync();
+                if (!ModelState.IsValid)
+                {
+                    return Page();
+                }
             }
             else 
             {
