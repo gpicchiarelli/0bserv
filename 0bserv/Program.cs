@@ -1,7 +1,9 @@
 using System.Reflection;
 using _0bserv.Models;
+using _0bserv.Services;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 [assembly: AssemblyVersion("1.0.*")]
 
@@ -20,7 +22,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<_0bservDbContext>(options =>
     options.UseSqlServer());
-
+builder.Services.AddSingleton<BackgroundService, FeedService>();
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
