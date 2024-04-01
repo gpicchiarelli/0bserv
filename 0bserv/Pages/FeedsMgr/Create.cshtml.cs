@@ -45,23 +45,18 @@ namespace _0bserv
                 {
                     _context.RssFeeds.Add(new FeedModel { Url = RssFeed });
                     await _context.SaveChangesAsync();
+                    return RedirectToPage("./Index");
                 }
                 else
                 {
                     ErrorMessage = "Feed già presente";
-                    return Page();
-                }
-                if (!ModelState.IsValid)
-                {
-                    return Page();
                 }
             }
             else 
             {
                 ErrorMessage = "URL non valido";
-                return Page();
             }            
-            return RedirectToPage("./Index");
+            return Page();
         }
 
         public bool IsValidRssFeed(string url)
