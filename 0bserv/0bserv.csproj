@@ -17,9 +17,13 @@
 	<RepositoryUrl>https://github.com/gpicchiarelli/0bserv.git</RepositoryUrl>
 	<Copyright>Giacomo Picchiarelli</Copyright>
 	<Description>News feed reader</Description>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Deterministic>false</Deterministic>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<Deterministic>false</Deterministic>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ConfigHelper.cs" />
+  </ItemGroup>
 
   <ItemGroup>
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.3" />
@@ -46,6 +50,7 @@
 	  <Pack>True</Pack>
 	  <PackagePath>\</PackagePath>
 	</None>
+	<None Include="ConfigHelper.cs" />
   </ItemGroup>
 
 </Project>

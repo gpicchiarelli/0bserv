@@ -6,14 +6,14 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
+using _0bserv;
+using System.Configuration.Internal;
 
 [assembly: AssemblyVersion("1.0.*")]
 
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
-
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
    .AddNegotiate();
 
@@ -22,8 +22,10 @@ builder.Services.AddAuthorization(options =>
     // By default, all incoming requests will be authorized according to the default policy.
     options.FallbackPolicy = options.DefaultPolicy;
 });
+
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<_0bservDbContext>();
+builder.Services.AddDbContext<_0bservDbContext>(options =>
+    options.UseSqlServer());
 
 var app = builder.Build();
 

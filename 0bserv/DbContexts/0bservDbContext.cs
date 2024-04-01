@@ -32,6 +32,13 @@ namespace _0bserv.DbContexts
             optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information); // Abilita il logging delle query su Console
         }
 
+        public string GetConnectionString()
+        {
+            // retrieve App Service connection string
+            var myConnString = _configuration.GetConnectionString("MSSQL");
+            return myConnString;
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
