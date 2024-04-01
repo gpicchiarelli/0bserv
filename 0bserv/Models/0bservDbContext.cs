@@ -1,11 +1,10 @@
 ﻿using System.Configuration;
 using System.Reflection;
-using _0bserv.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace _0bserv.DbContexts
+namespace _0bserv.Models
 {
     public class _0bservDbContext : DbContext
     {
