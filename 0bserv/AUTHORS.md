@@ -1,19 +1,11 @@
-# Autori
-
-## ChatGPT
-
-?? **ChatGPT**: Assistente di lingua naturale sviluppato da OpenAI. Aiuta a creare e condividere conoscenza.
-
----
-
-?? **"Tecnologia per creare e condividere conoscenza."** - *ChatGPT*
-
----
+﻿# Autori
 
 ## Giacomo Picchiarelli
 
-????? **Giacomo Picchiarelli**: Appassionato di sviluppo software. Trovami su GitHub: [gpicchiarelli](https://github.com/gpicchiarelli).
+[![GitHub](https://img.shields.io/badge/-GitHub-181717?style=flat-square&logo=GitHub&logoColor=white)](https://github.com/gpicchiarelli)
+
+"Ingegnere del software che trova gioia nella creazione e nell'innovazione."
 
 ---
 
-Contenuti rilasciati sotto licenza MIT.
+_Sviluppato da Giacomo Picchiarelli e ChatGPT_
