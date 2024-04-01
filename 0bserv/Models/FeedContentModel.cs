@@ -28,6 +28,5 @@ namespace _0bserv.Models
 
         [Required]
         public DateTime PublishDate { get; set; }
-
     }
 }
