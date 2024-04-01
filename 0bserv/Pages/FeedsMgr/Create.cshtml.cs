@@ -8,12 +8,16 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using _0bserv.Models;
 using System.ServiceModel.Syndication;
 using System.Xml;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Policy;
 
 namespace _0bserv
 {
     public class CreateModel : PageModel
     {
         private readonly _0bserv.Models._0bservDbContext _context;
+        public string ErrorMessage = "";
+        public String Url;
 
         public CreateModel(_0bserv.Models._0bservDbContext context)
         {
@@ -26,15 +30,22 @@ namespace _0bserv
         }
 
         [BindProperty]
-        public FeedModel RssFeed { get; set; } = default!;
-
+        public string RssFeed { get; set; } = default!;
+        
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-            if (IsValidRssFeed(RssFeed.Url))
+            if (IsValidRssFeed(RssFeed))
             {
-                _context.RssFeeds.Add(RssFeed);
-                await _context.SaveChangesAsync();
+                if (_context.RssFeeds.FirstOrDefault(feed => feed.Url == RssFeed) is null)
+                {
+                    _context.RssFeeds.Add(new FeedModel { Url = RssFeed });
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    ErrorMessage = "Feed già presente";
+                }
                 if (!ModelState.IsValid)
                 {
                     return Page();
