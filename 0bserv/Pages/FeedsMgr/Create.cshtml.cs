@@ -33,11 +33,12 @@ namespace _0bserv
         }
 
         [BindProperty]
-        public string RssFeed { get; set; } = default!;
+        public string RssFeed { get; set; } = default!;        
         
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
+            RssFeed = RssFeed.ToLower().Trim();
             if (IsValidRssFeed(RssFeed))
             {
                 if (_context.RssFeeds.FirstOrDefault(feed => feed.Url == RssFeed) is null)
