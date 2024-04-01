@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Importa OPML";
+}
+
+<h2>Importa OPML</h2>
+
+@using (Html.BeginForm("Upload", "ImportOPML", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="form-group">
+        <label for="opmlFile">Seleziona il file OPML:</label>
+        <input type="file" name="opmlFile" id="opmlFile" class="form-control-file">
+    </div>
+    <button type="submit" class="btn btn-primary">Importa</button>
+}
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-info mt-3" role="alert">
+        @ViewBag.Message
+    </div>
+}
