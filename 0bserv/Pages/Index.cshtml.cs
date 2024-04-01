@@ -31,29 +31,41 @@ namespace _0bserv.Pages
 
         public void OnGet(int pagina = 1)
         {
-            var totalElementi = _context.FeedContents.Count(); // Esempio: il totale degli elementi nella tabella
+            // Conta solo il numero di elementi senza recuperare tutti i dati
+            var totalElementi = _context.FeedContents.Count();
 
+            // Ottieni solo l'ID dei contenuti ordinati per data di pubblicazione in modo discendente
+            var idsContenutiOrdinati = _context.FeedContents
+                                            .OrderByDescending(contenuto => contenuto.PublishDate)
+                                            .Select(contenuto => contenuto.Id)
+                                            .ToList();
+
+            // Salta e prendi il numero corretto di ID per la pagina specificata
+            var idContenutiPagina = idsContenutiOrdinati
+                                        .Skip((pagina - 1) * ElementiPerPagina)
+                                        .Take(ElementiPerPagina);
+
+            // Recupera solo i dati necessari per la pagina corrente
             Contenuti = new List<ContenutoViewModel>();
-
-            foreach (var contenuto in _context.FeedContents.Skip((pagina - 1) * ElementiPerPagina).Take(ElementiPerPagina))
+            foreach (var idContenuto in idContenutiPagina)
             {
-                var nuovoContenuto = new ContenutoViewModel
+                var contenuto = _context.FeedContents.Find(idContenuto);
+                if (contenuto != null)
                 {
-                    Id = contenuto.Id,
-                    // Rimuovi la formattazione HTML dal titolo
-                    Titolo = Regex.Replace(contenuto.Title, "<.*?>", String.Empty),
-                    // Assegna la data di pubblicazione
-                    DataPubblicazione = contenuto.PublishDate
-                };
-                // Limita la lunghezza del titolo per la visibilità
-                nuovoContenuto.Titolo = nuovoContenuto.Titolo.Length > 50 ? nuovoContenuto.Titolo.Substring(0, 50) + "..." : nuovoContenuto.Titolo;
+                    var nuovoContenuto = new ContenutoViewModel
+                    {
+                        Id = contenuto.Id,
+                        Titolo = Regex.Replace(contenuto.Title, "<.*?>", String.Empty),
+                        DataPubblicazione = contenuto.PublishDate
+                    };
+                    // Limita la lunghezza del titolo per la visibilità
+                    nuovoContenuto.Titolo = nuovoContenuto.Titolo.Length > 50 ? nuovoContenuto.Titolo.Substring(0, 50) + "..." : nuovoContenuto.Titolo;
 
-                Contenuti.Add(nuovoContenuto);
+                    Contenuti.Add(nuovoContenuto);
+                }
             }
-
             PaginaCorrente = pagina;
             NumeroPagine = (int)Math.Ceiling((double)totalElementi / ElementiPerPagina);
         }
-
     }
 }
