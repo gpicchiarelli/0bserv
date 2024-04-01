@@ -22,7 +22,9 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<_0bservDbContext>(options =>
     options.UseSqlServer());
-builder.Services.AddSingleton<BackgroundService, FeedService>();
+//builder.Services.AddSingleton<BackgroundService, FeedService>();
+builder.Services.AddHostedService<FeedService>();
+
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.

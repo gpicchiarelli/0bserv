@@ -75,6 +75,7 @@ namespace _0bserv.Services
                                 };
 
                                 dbContext.FeedContents.Add(newFeedContent);
+                                _ = await dbContext.SaveChangesAsync();
                                 _logger.LogInformation($"New feed content added: {newFeedContent.Title}");
                             }
                             else
