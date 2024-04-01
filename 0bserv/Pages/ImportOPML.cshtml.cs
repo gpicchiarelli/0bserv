@@ -1,65 +1,76 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using _0bserv.Models;
+using System.Xml.Linq;
 
 namespace _0bserv.Pages
 {
-    public class ImportOPMLModel : Controller
+    public class ImportOPMLModel : PageModel
     {
         private readonly _0bservDbContext _context;
+        private readonly ILogger<ImportOPMLModel> _logger;
 
-        public ImportOPMLModel(_0bservDbContext context)
+        public ImportOPMLModel(_0bservDbContext context, ILogger<ImportOPMLModel> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
-        public IActionResult Index()
+        [BindProperty]
+        public IFormFile OpmlFile { get; set; }
+
+        public IActionResult OnGet()
         {
-            return View();
+            return Page();
         }
 
-        [HttpPost]
-        public IActionResult Upload()
+        public async Task<IActionResult> OnPostUploadAsync()
         {
-            var opmlFile = Request.Form.Files.FirstOrDefault();
-            if (opmlFile == null || opmlFile.Length == 0)
+            if (OpmlFile == null || OpmlFile.Length == 0)
             {
-                ViewBag.Message = "Nessun file selezionato.";
-                return View("Index");
+                TempData["FileUploadError"] = "Nessun file selezionato.";
+                return Page();
             }
 
-            if (opmlFile.ContentType != "text/xml")
+            if (!OpmlFile.FileName.EndsWith(".opml", StringComparison.OrdinalIgnoreCase))
             {
-                ViewBag.Message = "Il file non è un file OPML valido.";
-                return View("Index");
+                TempData["FileUploadError"] = "Il file selezionato non è un file OPML valido.";
+                return Page();
             }
 
             try
             {
-                using (var stream = new StreamReader(opmlFile.OpenReadStream()))
+                var feedUrls = new List<string>();
+
+                using (var stream = new StreamReader(OpmlFile.OpenReadStream()))
                 {
-                    XDocument doc = XDocument.Load(stream);
-                    var feedUrls = (from outline in doc.Descendants("outline")
-                                    select outline.Attribute("xmlUrl")?.Value).ToList();
-
-                    foreach (var url in feedUrls)
-                    {
-                        _context.RssFeeds.Add(new FeedModel { Url = url });
-                    }
-                    _context.SaveChanges();
-
-                    ViewBag.Message = $"File OPML importato correttamente. Trovati {feedUrls.Count} feed.";
-                    return View("Index");
+                    var doc = XDocument.Load(stream);
+                    feedUrls = (from outline in doc.Descendants("outline")
+                                select outline.Attribute("xmlUrl")?.Value).ToList();
                 }
+
+                foreach (var url in feedUrls)
+                {
+                    _context.RssFeeds.Add(new FeedModel { Url = url });
+                }
+
+                await _context.SaveChangesAsync();
+
+                TempData["Message"] = $"File OPML importato correttamente. Trovati {feedUrls.Count} feed.";
             }
             catch (Exception ex)
             {
-                ViewBag.Message = $"Si è verificato un errore durante l'importazione del file OPML: {ex.Message}";
-                return View("Index");
+                _logger.LogError(ex, "Errore durante il caricamento del file OPML.");
+                TempData["FileUploadError"] = "Si è verificato un errore durante il caricamento del file OPML.";
             }
+
+            return Page();
         }
     }
 }

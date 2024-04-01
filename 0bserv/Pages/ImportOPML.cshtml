@@ -6,17 +6,28 @@
 
 <h2>Importa OPML</h2>
 
-<form method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label for="opmlFile">Seleziona il file OPML:</label>
-        <input type="file" name="opmlFile" id="opmlFile" class="form-control-file" accept=".opml">
-    </div>
+<form enctype="multipart/form-data" method="post">
+    <dl>
+        <dt>
+            <label asp-for="OpmlFile">Seleziona il file OPML:</label>
+        </dt>
+        <dd>
+            <input asp-for="OpmlFile" type="file">
+            <span asp-validation-for="OpmlFile"></span>
+        </dd>
+    </dl>
     <button type="submit" class="btn btn-primary">Importa</button>
 </form>
 
-@if (!string.IsNullOrEmpty(ViewBag.Message))
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
 {
     <div class="alert alert-info mt-3" role="alert">
-        @ViewBag.Message
+        @TempData["Message"]
+    </div>
+}
+@if (!string.IsNullOrEmpty(TempData["FileUploadError"] as string))
+{
+    <div class="alert alert-danger mt-3" role="alert">
+        @TempData["FileUploadError"]
     </div>
 }
