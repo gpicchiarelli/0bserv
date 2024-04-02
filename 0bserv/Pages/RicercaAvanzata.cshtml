@@ -6,18 +6,18 @@
 
 <h2>Ricerca Avanzata</h2>
 
-<form method="post" asp-page-handler="Search">
+<form method="get" asp-page="./Search">
     <div class="form-group">
         <label>Parola chiave:</label>
-        <input type="text" asp-for="SearchInput.Keyword" class="form-control" />
+        <input type="text" name="keyword" value="@Model.SearchInput.Keyword" class="form-control" />
     </div>
     <div class="form-group">
         <label>Data di inizio:</label>
-        <input type="date" asp-for="SearchInput.StartDate" class="form-control" />
+        <input type="date" name="startDate" value="@Model.SearchInput.StartDate?.ToString("yyyy-MM-dd")" class="form-control" />
     </div>
     <div class="form-group">
         <label>Data di fine:</label>
-        <input type="date" asp-for="SearchInput.EndDate" class="form-control" />
+        <input type="date" name="endDate" value="@Model.SearchInput.EndDate?.ToString("yyyy-MM-dd")" class="form-control" />
     </div>
     <button type="submit" class="btn btn-primary">Cerca</button>
 </form>
@@ -28,7 +28,11 @@
     <ul>
         @foreach (var result in Model.SearchResults)
         {
-            <li>@result.Title - @result.PublishDate.ToString("dd/MM/yyyy")</li>
+            <li>
+                <a href="@Url.Page("/DettItem", new { idd = result.Id })">
+                    @result.Title - @result.PublishDate.ToString("dd/MM/yyyy")
+                </a>
+            </li>
         }
     </ul>
 
@@ -37,27 +41,27 @@
             @if (Model.PaginaCorrente > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" href="?pagina=1">Prima</a>
+                    <a class="page-link" href="?pagina=1&keyword=@Model.SearchInput.Keyword&startDate=@Model.SearchInput.StartDate&endDate=@Model.SearchInput.EndDate">Prima</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="?pagina=@(Model.PaginaCorrente - 1)">Precedente</a>
+                    <a class="page-link" href="?pagina=@(Model.PaginaCorrente - 1)&keyword=@Model.SearchInput.Keyword&startDate=@Model.SearchInput.StartDate&endDate=@Model.SearchInput.EndDate">Precedente</a>
                 </li>
             }
 
             @for (int i = Math.Max(1, Model.PaginaCorrente - 5); i <= Math.Min(Model.NumeroPagine, Model.PaginaCorrente + 5); i++)
             {
                 <li class="page-item @(Model.PaginaCorrente == i ? "active" : "")">
-                    <a class="page-link" href="?pagina=@i">@i</a>
+                    <a class="page-link" href="?pagina=@i&keyword=@Model.SearchInput.Keyword&startDate=@Model.SearchInput.StartDate&endDate=@Model.SearchInput.EndDate">@i</a>
                 </li>
             }
 
             @if (Model.PaginaCorrente < Model.NumeroPagine)
             {
                 <li class="page-item">
-                    <a class="page-link" href="?pagina=@(Model.PaginaCorrente + 1)">Successiva</a>
+                    <a class="page-link" href="?pagina=@(Model.PaginaCorrente + 1)&keyword=@Model.SearchInput.Keyword&startDate=@Model.SearchInput.StartDate&endDate=@Model.SearchInput.EndDate">Successiva</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="?pagina=@Model.NumeroPagine">Ultima</a>
+                    <a class="page-link" href="?pagina=@Model.NumeroPagine&keyword=@Model.SearchInput.Keyword&startDate=@Model.SearchInput.StartDate&endDate=@Model.SearchInput.EndDate">Ultima</a>
                 </li>
             }
         </ul>
