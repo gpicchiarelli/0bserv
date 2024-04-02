@@ -2,16 +2,21 @@ using System.Reflection;
 using _0bserv.Models;
 using _0bserv.Services;
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 
 [assembly: AssemblyVersion("1.0.*")]
 
 
+
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
    .AddNegotiate();
+builder.Services.AddAuthentication(IISDefaults.AuthenticationScheme);
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthorization(options =>
 {
