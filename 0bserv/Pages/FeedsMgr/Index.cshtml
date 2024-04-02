@@ -1,6 +1,5 @@
 ﻿@page
 @model FeedIndexModel
-
 @{
     ViewData["Title"] = "Lista feed";
 }
@@ -20,16 +19,49 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.RssFeed) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Url)
-            </td>
-            <td>
-                <a asp-page="./Details" asp-route-id="@item.Id">Dettaglio</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Cancella</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.RssFeed)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Url)
+                </td>
+                <td>
+                    <a asp-page="./Details" asp-route-id="@item.Id">Dettaglio</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Cancella</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@if (Model.PaginaTotale > 1)
+{
+    <nav aria-label="Paginazione">
+        <ul class="pagination">
+            @if (Model.PaginaCorrente > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Index" asp-route-pagina="1">Prima</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Index" asp-route-pagina="@(Model.PaginaCorrente - 1)">Precedente</a>
+                </li>
+            }
+            @for (var i = Model.InizioPagina; i <= Model.FinePagina; i++)
+            {
+                <li class="page-item @(i == Model.PaginaCorrente ? "active" : "")">
+                    <a class="page-link" asp-page="./Index" asp-route-pagina="@i">@i</a>
+                </li>
+            }
+            @if (Model.PaginaCorrente < Model.PaginaTotale)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Index" asp-route-pagina="@(Model.PaginaCorrente + 1)">Successiva</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Index" asp-route-pagina="@Model.PaginaTotale">Ultima</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

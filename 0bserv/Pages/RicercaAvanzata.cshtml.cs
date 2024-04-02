@@ -26,14 +26,64 @@ namespace _0bserv.Pages
         public int PaginaCorrente { get; set; }
         public int NumeroPagine { get; set; }
 
-        public void OnGet(int? pagina)
+        public void OnGet(int? pagina, string keyword, DateTime? startDate, DateTime? endDate)
         {
             // Inizializza l'oggetto SearchInputModel
-            SearchInput = new SearchInputModel();
+            SearchInput = new SearchInputModel
+            {
+                Keyword = keyword,
+                StartDate = startDate,
+                EndDate = endDate
+            };
 
             // Esegui la ricerca e la paginazione
             PaginaCorrente = pagina ?? 1;
             int risultatiPerPagina = 10;
+            var query = BuildQuery();
+
+            SearchResults = query.Skip((PaginaCorrente - 1) * risultatiPerPagina)
+                                 .Take(risultatiPerPagina)
+                                 .ToList();
+
+            NumeroPagine = (int)Math.Ceiling((double)query.Count() / risultatiPerPagina);
+        }
+
+        public IActionResult OnPostSearch()
+        {
+            // Verifica se la keyword è vuota
+            if (string.IsNullOrWhiteSpace(SearchInput.Keyword))
+            {
+                // Se la keyword è vuota, reindirizza alla pagina iniziale
+                return RedirectToPage("/Index");
+            }
+
+            // Verifica e valorizza le date se sono nulle
+            if (!SearchInput.StartDate.HasValue)
+            {
+                SearchInput.StartDate = DateTime.Today;
+            }
+
+            if (!SearchInput.EndDate.HasValue)
+            {
+                SearchInput.EndDate = DateTime.Today;
+            }
+
+            // Costruisci l'URL con i parametri di ricerca
+            var url = Url.Page("/Search", new
+            {
+                pagina = 1,
+                keyword = SearchInput.Keyword,
+                startDate = SearchInput.StartDate,
+                endDate = SearchInput.EndDate
+            });
+
+            // Reindirizza alla pagina di ricerca con i parametri di ricerca nell'URL
+            return Redirect(url);
+        }
+
+
+        private IQueryable<FeedContentModel> BuildQuery()
+        {
             var query = _context.FeedContents.AsQueryable();
 
             if (!string.IsNullOrEmpty(SearchInput.Keyword))
@@ -55,18 +105,12 @@ namespace _0bserv.Pages
                 query = query.Where(f => f.PublishDate <= SearchInput.EndDate);
             }
 
-            SearchResults = query.Skip((PaginaCorrente - 1) * risultatiPerPagina)
-                                 .Take(risultatiPerPagina)
-                                 .ToList();
+            // Ordina i risultati per data di pubblicazione decrescente
+            query = query.OrderByDescending(f => f.PublishDate);
 
-            NumeroPagine = (int)Math.Ceiling((double)query.Count() / risultatiPerPagina);
+            return query;
         }
 
-        public void OnPostSearch()
-        {
-            // Esegui la ricerca
-            OnGet(1);
-        }
     }
 
     public class SearchInputModel
