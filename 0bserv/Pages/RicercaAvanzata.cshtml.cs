@@ -26,7 +26,8 @@ namespace _0bserv.Pages
         public int PaginaCorrente { get; set; }
         public int NumeroPagine { get; set; }
 
-        public void OnGet(int? pagina, string keyword, DateTime? startDate, DateTime? endDate)
+        [HttpGet]
+        public async Task OnGetAsync(int? pagina, string keyword, DateTime? startDate, DateTime? endDate)
         {
             // Inizializza l'oggetto SearchInputModel
             SearchInput = new SearchInputModel
@@ -41,9 +42,9 @@ namespace _0bserv.Pages
             int risultatiPerPagina = 10;
             var query = BuildQuery();
 
-            SearchResults = query.Skip((PaginaCorrente - 1) * risultatiPerPagina)
-                                 .Take(risultatiPerPagina)
-                                 .ToList();
+            SearchResults = await query.Skip((PaginaCorrente - 1) * risultatiPerPagina)
+                                       .Take(risultatiPerPagina)
+                                       .ToListAsync();
 
             NumeroPagine = (int)Math.Ceiling((double)query.Count() / risultatiPerPagina);
         }
@@ -88,11 +89,12 @@ namespace _0bserv.Pages
 
             if (!string.IsNullOrEmpty(SearchInput.Keyword))
             {
+                string keyword = $"%{SearchInput.Keyword}%";
                 query = query.Where(f =>
-                    EF.Functions.Like(f.Title, $"%{SearchInput.Keyword}%") ||
-                    EF.Functions.Like(f.Description, $"%{SearchInput.Keyword}%") ||
-                    EF.Functions.Like(f.Link, $"%{SearchInput.Keyword}%") ||
-                    EF.Functions.Like(f.Author, $"%{SearchInput.Keyword}%"));
+                    EF.Functions.Like(f.Title, keyword) ||
+                    EF.Functions.Like(f.Description, keyword) ||
+                    EF.Functions.Like(f.Link, keyword) ||
+                    EF.Functions.Like(f.Author, keyword));
             }
 
             if (SearchInput.StartDate.HasValue)
@@ -110,7 +112,6 @@ namespace _0bserv.Pages
 
             return query;
         }
-
     }
 
     public class SearchInputModel
