@@ -47,7 +47,7 @@
                         <li class="page-item @(Model.PaginaCorrente == 1 ? "disabled" : "")">
                             <a class="page-link" href="?pagina=1" tabindex="-1">Prima</a>
                         </li>
-                        @for (int i = 1; i <= Model.NumeroPagine; i++)
+                        @for (int i = Math.Max(1, Model.PaginaCorrente - 5); i <= Math.Min(Model.NumeroPagine, Model.PaginaCorrente + 5); i++)
                         {
                             <li class="page-item @(Model.PaginaCorrente == i ? "active" : "")">
                                 <a class="page-link" href="?pagina=@i">@i</a>

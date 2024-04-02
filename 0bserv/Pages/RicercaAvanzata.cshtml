@@ -1,0 +1,69 @@
+﻿@page
+@model SearchModel
+@{
+    ViewData["Title"] = "Ricerca Avanzata";
+}
+
+<h2>Ricerca Avanzata</h2>
+
+<form method="post" asp-page-handler="Search">
+    <div class="form-group">
+        <label>Parola chiave:</label>
+        <input type="text" asp-for="SearchInput.Keyword" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Data di inizio:</label>
+        <input type="date" asp-for="SearchInput.StartDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Data di fine:</label>
+        <input type="date" asp-for="SearchInput.EndDate" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Cerca</button>
+</form>
+
+@if (Model.SearchResults != null && Model.SearchResults.Any())
+{
+    <h3>Risultati della ricerca:</h3>
+    <ul>
+        @foreach (var result in Model.SearchResults)
+        {
+            <li>@result.Title - @result.PublishDate.ToString("dd/MM/yyyy")</li>
+        }
+    </ul>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            @if (Model.PaginaCorrente > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pagina=1">Prima</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?pagina=@(Model.PaginaCorrente - 1)">Precedente</a>
+                </li>
+            }
+
+            @for (int i = Math.Max(1, Model.PaginaCorrente - 5); i <= Math.Min(Model.NumeroPagine, Model.PaginaCorrente + 5); i++)
+            {
+                <li class="page-item @(Model.PaginaCorrente == i ? "active" : "")">
+                    <a class="page-link" href="?pagina=@i">@i</a>
+                </li>
+            }
+
+            @if (Model.PaginaCorrente < Model.NumeroPagine)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pagina=@(Model.PaginaCorrente + 1)">Successiva</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?pagina=@Model.NumeroPagine">Ultima</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+else
+{
+    <p>Nessun risultato trovato.</p>
+}
