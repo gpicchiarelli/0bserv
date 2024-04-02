@@ -38,20 +38,11 @@ namespace _0bserv.Pages
                 StartDate = startDate,
                 EndDate = endDate
             };
-            var cacheKey = GetCacheKey(pagina, keyword, startDate, endDate);
-            List<FeedContentModel> searchResults;
 
-            // Verifica se i risultati sono presenti nella cache
-            if (!_cache.TryGetValue(cacheKey, out searchResults))
-            {
-                // Esegui la ricerca
-                searchResults = await BuildQuery(keyword, startDate, endDate).ToListAsync();
+            // Esegui la ricerca
+            var searchResults = await BuildQuery(keyword, startDate, endDate).ToListAsync();
 
-                // Memorizza i risultati nella cache con un timeout
-                _cache.Set(cacheKey, searchResults, TimeSpan.FromMinutes(10)); // Esempio: 10 minuti di timeout
-            }
-
-            // Esegui la paginazione sui risultati ottenuti
+            // Applica la paginazione ai risultati filtrati
             PaginaCorrente = pagina ?? 1;
             int risultatiPerPagina = 10;
             SearchResults = searchResults
@@ -63,6 +54,7 @@ namespace _0bserv.Pages
 
             return Page();
         }
+
 
 
         public IActionResult OnPostSearch()
