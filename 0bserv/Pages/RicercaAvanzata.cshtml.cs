@@ -3,20 +3,24 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using _0bserv.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace _0bserv.Pages
 {
     public class SearchModel : PageModel
     {
         private readonly _0bservDbContext _context;
+        private readonly IMemoryCache _cache;
 
-        public SearchModel(_0bservDbContext context)
+        public SearchModel(_0bservDbContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         [BindProperty]
@@ -26,28 +30,40 @@ namespace _0bserv.Pages
         public int PaginaCorrente { get; set; }
         public int NumeroPagine { get; set; }
 
-        [HttpGet]
-        public async Task OnGetAsync(int? pagina, string keyword, DateTime? startDate, DateTime? endDate)
+        public async Task<IActionResult> OnGetAsync(int? pagina, string keyword, DateTime? startDate, DateTime? endDate)
         {
-            // Inizializza l'oggetto SearchInputModel
             SearchInput = new SearchInputModel
             {
                 Keyword = keyword,
                 StartDate = startDate,
                 EndDate = endDate
             };
+            var cacheKey = GetCacheKey(pagina, keyword, startDate, endDate);
+            List<FeedContentModel> searchResults;
 
-            // Esegui la ricerca e la paginazione
+            // Verifica se i risultati sono presenti nella cache
+            if (!_cache.TryGetValue(cacheKey, out searchResults))
+            {
+                // Esegui la ricerca
+                searchResults = await BuildQuery(keyword, startDate, endDate).ToListAsync();
+
+                // Memorizza i risultati nella cache con un timeout
+                _cache.Set(cacheKey, searchResults, TimeSpan.FromMinutes(10)); // Esempio: 10 minuti di timeout
+            }
+
+            // Esegui la paginazione sui risultati ottenuti
             PaginaCorrente = pagina ?? 1;
             int risultatiPerPagina = 10;
-            var query = BuildQuery();
+            SearchResults = searchResults
+                .Skip((PaginaCorrente - 1) * risultatiPerPagina)
+                .Take(risultatiPerPagina)
+                .ToList();
 
-            SearchResults = await query.Skip((PaginaCorrente - 1) * risultatiPerPagina)
-                                       .Take(risultatiPerPagina)
-                                       .ToListAsync();
+            NumeroPagine = (int)Math.Ceiling((double)searchResults.Count / risultatiPerPagina); // Assumendo 10 risultati per pagina
 
-            NumeroPagine = (int)Math.Ceiling((double)query.Count() / risultatiPerPagina);
+            return Page();
         }
+
 
         public IActionResult OnPostSearch()
         {
@@ -82,35 +98,41 @@ namespace _0bserv.Pages
             return Redirect(url);
         }
 
-
-        private IQueryable<FeedContentModel> BuildQuery()
+        private IQueryable<FeedContentModel> BuildQuery(string keyword, DateTime? startDate, DateTime? endDate)
         {
             var query = _context.FeedContents.AsQueryable();
 
-            if (!string.IsNullOrEmpty(SearchInput.Keyword))
+            // Applica i filtri solo se i valori non sono nulli
+            if (!string.IsNullOrEmpty(keyword))
             {
-                string keyword = $"%{SearchInput.Keyword}%";
+                string keywordPattern = $"%{keyword}%";
                 query = query.Where(f =>
-                    EF.Functions.Like(f.Title, keyword) ||
-                    EF.Functions.Like(f.Description, keyword) ||
-                    EF.Functions.Like(f.Link, keyword) ||
-                    EF.Functions.Like(f.Author, keyword));
+                    EF.Functions.Like(f.Title, keywordPattern) ||
+                    EF.Functions.Like(f.Description, keywordPattern) ||
+                    EF.Functions.Like(f.Link, keywordPattern) ||
+                    EF.Functions.Like(f.Author, keywordPattern));
             }
 
-            if (SearchInput.StartDate.HasValue)
+            if (startDate.HasValue)
             {
-                query = query.Where(f => f.PublishDate >= SearchInput.StartDate);
+                query = query.Where(f => f.PublishDate >= startDate);
             }
 
-            if (SearchInput.EndDate.HasValue)
+            if (endDate.HasValue)
             {
-                query = query.Where(f => f.PublishDate <= SearchInput.EndDate);
+                query = query.Where(f => f.PublishDate <= endDate);
             }
 
             // Ordina i risultati per data di pubblicazione decrescente
             query = query.OrderByDescending(f => f.PublishDate);
 
             return query;
+        }
+
+
+        private string GetCacheKey(int? pagina, string keyword, DateTime? startDate, DateTime? endDate)
+        {
+            return $"Search_{pagina}_{keyword}_{startDate?.ToString("yyyyMMdd")}_{endDate?.ToString("yyyyMMdd")}";
         }
     }
 

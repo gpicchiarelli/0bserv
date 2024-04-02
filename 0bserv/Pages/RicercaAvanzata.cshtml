@@ -9,18 +9,19 @@
 <form method="get" asp-page="./Search">
     <div class="form-group">
         <label>Parola chiave:</label>
-        <input type="text" name="keyword" value="@Model.SearchInput.Keyword" class="form-control" />
+        <input type="text" asp-for="SearchInput.Keyword" class="form-control" />
     </div>
     <div class="form-group">
         <label>Data di inizio:</label>
-        <input type="date" name="startDate" value="@Model.SearchInput.StartDate?.ToString("yyyy-MM-dd")" class="form-control" />
+        <input type="date" asp-for="SearchInput.StartDate" class="form-control" />
     </div>
     <div class="form-group">
         <label>Data di fine:</label>
-        <input type="date" name="endDate" value="@Model.SearchInput.EndDate?.ToString("yyyy-MM-dd")" class="form-control" />
+        <input type="date" asp-for="SearchInput.EndDate" class="form-control" />
     </div>
     <button type="submit" class="btn btn-primary">Cerca</button>
 </form>
+
 
 @if (Model.SearchResults != null && Model.SearchResults.Any())
 {
@@ -66,6 +67,7 @@
             }
         </ul>
     </nav>
+
 }
 else
 {
