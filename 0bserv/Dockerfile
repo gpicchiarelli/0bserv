@@ -30,13 +30,29 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "0bserv.dll"]
 
-# Install MSSQL Server
-# Here, you may want to replace the password with a strong, secure password
-ENV SA_PASSWORD=YourStrong!Passw0rd
+# Set up environment variables for MSSQL Server
 ENV ACCEPT_EULA=Y
-RUN apt-get update && apt-get install -y curl gnupg
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2019.list | tee /etc/apt/sources.list.d/mssql-server.list
-RUN apt-get update && apt-get install -y mssql-server
-CMD /opt/mssql/bin/sqlservr
-EXPOSE 1433
+ENV SA_PASSWORD=YourStrong!Passw0rd
+
+# Install MSSQL Server
+RUN apt-get update \
+    && apt-get install -y wget \
+    && wget -qO- https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && wget -qO- https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+       msodbcsql17 \
+       mssql-tools \
+       unixodbc-dev \
+       curl \
+       gnupg \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install .NET SDK and SQL Server Tools
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       dotnet-sdk-8.0 \
+       mssql-tools \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
