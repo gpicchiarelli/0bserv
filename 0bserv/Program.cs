@@ -17,7 +17,11 @@ builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
    .AddNegotiate();
 builder.Services.AddAuthentication(IISDefaults.AuthenticationScheme);
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
+    options.Cookie.Name = "0bservRSSReader";
+});
 builder.Services.AddAuthorization(options =>
 {
     // By default, all incoming requests will be authorized according to the default policy.
@@ -47,6 +51,7 @@ using (AsyncServiceScope scope = app.Services.CreateAsyncScope())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseSession();
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapRazorPages();

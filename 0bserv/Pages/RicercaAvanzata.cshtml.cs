@@ -34,6 +34,19 @@ namespace _0bserv.Pages
             var startDate = SearchInput.StartDate;
             var endDate = SearchInput.EndDate;
 
+            if (SearchInput.StartDate is null) 
+            {
+                startDate = DateTime.Now;
+            }
+            if (SearchInput.EndDate is null) 
+            {
+                endDate = DateTime.Now;
+            }
+            // Memorizza i parametri di ricerca nella sessione
+            HttpContext.Session.SetString("Keyword", keyword);
+            HttpContext.Session.SetString("StartDate", startDate?.ToString("yyyy-MM-dd"));
+            HttpContext.Session.SetString("EndDate", endDate?.ToString("yyyy-MM-dd"));
+
             var searchResults = await BuildQuery(keyword, startDate, endDate).ToListAsync();
 
             if (searchResults.Any())
@@ -55,6 +68,7 @@ namespace _0bserv.Pages
 
             return Page();
         }
+
 
 
         private IQueryable<FeedContentModel> BuildQuery(string keyword, DateTime? startDate, DateTime? endDate)
