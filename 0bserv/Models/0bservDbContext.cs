@@ -13,14 +13,7 @@ namespace _0bserv.Models
         {
             _configuration = configuration;
         }
-        //scaffolding fix
-        public _0bservDbContext CreateDbContext(string[] args)
-        {
-            DbContextOptionsBuilder<_0bservDbContext> optionsBuilder = new();
-            _ = optionsBuilder.UseSqlServer("Server=localhost;Database=0bserv;Trusted_Connection=True;MultipleActiveResultSets=true");
 
-            return new _0bservDbContext(optionsBuilder.Options, _configuration);
-        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string? connectionString = _configuration.GetConnectionString("MSSQL");
@@ -62,23 +55,6 @@ namespace _0bserv.Models
                 .IsUnique();
             _ = modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        }
-
-        public List<FeedContentModel> SearchFeedContents(string keyword, DateTime? startDate, DateTime? endDate)
-        {
-            // Esegui una query parametrizzata per la ricerca full-text
-            var searchResults = FeedContents
-                .Where(f =>
-                    (string.IsNullOrEmpty(keyword) ||
-                    EF.Functions.Like(f.Title, $"%{keyword}%") ||
-                    EF.Functions.Like(f.Description, $"%{keyword}%") ||
-                    EF.Functions.Like(f.Link, $"%{keyword}%") ||
-                    EF.Functions.Like(f.Author, $"%{keyword}%"))
-                    && (!startDate.HasValue || f.PublishDate >= startDate)
-                    && (!endDate.HasValue || f.PublishDate <= endDate))
-                .ToList();
-
-            return searchResults;
         }
 
         public void EnsureDatabaseCreated()
