@@ -28,12 +28,19 @@ namespace _0bserv.Pages
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
 
-        public async Task<IActionResult> OnGet() 
+        public async Task<IActionResult> OnGet(string keyword, DateTime? startDate, DateTime? endDate, int currentPage = 1)
         {
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                SearchInput.Keyword = keyword;
+                SearchInput.StartDate = startDate;
+                SearchInput.EndDate = endDate;
+            }
+
             // Recupera i parametri di ricerca
-            var keyword = SearchInput?.Keyword;
-            var startDate = SearchInput?.StartDate;
-            var endDate = SearchInput?.EndDate;
+            keyword = SearchInput?.Keyword;
+            startDate = SearchInput?.StartDate;
+            endDate = SearchInput?.EndDate;
 
             // Verifica se i parametri di ricerca sono validi
             if (string.IsNullOrWhiteSpace(keyword))
@@ -52,29 +59,19 @@ namespace _0bserv.Pages
             TotalPages = (int)Math.Ceiling((double)totalResults / PageSize);
 
             // Imposta la pagina corrente
-            if (Request.Query.ContainsKey("CurrentPage"))
+            if (currentPage < 1)
             {
-                CurrentPage = Convert.ToInt32(Request.Query["CurrentPage"]);
+                currentPage = 1;
             }
-            else
+            else if (currentPage > TotalPages)
             {
-                CurrentPage = 1;
-            }
-
-            // Se la pagina corrente è maggiore del numero totale di pagine, imposta la pagina corrente all'ultima pagina
-            if (CurrentPage > TotalPages)
-            {
-                CurrentPage = TotalPages;
+                currentPage = TotalPages;
             }
 
-            // Se la pagina corrente è minore di 1, imposta la pagina corrente alla prima pagina
-            if (CurrentPage < 1)
-            {
-                CurrentPage = 1;
-            }
+            CurrentPage = currentPage;
 
             // Seleziona solo i risultati corrispondenti alla pagina corrente
-            SearchResults = await query.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToListAsync();
+            SearchResults = await query.Skip((currentPage - 1) * PageSize).Take(PageSize).ToListAsync();
 
             return Page();
         }
@@ -103,23 +100,11 @@ namespace _0bserv.Pages
             TotalPages = (int)Math.Ceiling((double)totalResults / PageSize);
 
             // Imposta la pagina corrente
-            if (Request.Query.ContainsKey("CurrentPage"))
+            if (!string.IsNullOrEmpty(Request.Query["CurrentPage"]))
             {
                 CurrentPage = Convert.ToInt32(Request.Query["CurrentPage"]);
             }
             else
-            {
-                CurrentPage = 1;
-            }
-
-            // Se la pagina corrente è maggiore del numero totale di pagine, imposta la pagina corrente all'ultima pagina
-            if (CurrentPage > TotalPages)
-            {
-                CurrentPage = TotalPages;
-            }
-
-            // Se la pagina corrente è minore di 1, imposta la pagina corrente alla prima pagina
-            if (CurrentPage < 1)
             {
                 CurrentPage = 1;
             }
@@ -129,7 +114,6 @@ namespace _0bserv.Pages
 
             return Page();
         }
-
 
         private IQueryable<FeedContentModel> BuildQuery(string keyword, DateTime? startDate, DateTime? endDate)
         {
