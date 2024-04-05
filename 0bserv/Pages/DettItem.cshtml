@@ -1,7 +1,7 @@
 ﻿@page
 @model DettaglioItemModel
 @{
-    ViewData["Title"] = "Dettaglio Articolo";
+    ViewData["Title"] = "Dettaglio articolo";
 }
 
 <div class="container mt-4">
@@ -24,7 +24,7 @@
             <a href="javascript:history.back()" class="btn btn-outline-secondary">&lt; Torna Indietro</a>
         </div>
         <div class="col text-right">
-            <a href="mailto:?subject=@Model.Contenuto.Titolo&amp;body=@Model.Contenuto.Testo" class="btn btn-outline-info">Condividi via Email <i class="fas fa-share"></i></a>
+            <a href="mailto:?subject=@Model.Contenuto.Titolo&amp;body= @Model.Contenuto.DataPubblicazione?.ToString("dd/MM/yyyy HH:mm") -- @Model.Contenuto.Testo - Autore: @Model.Contenuto.Autore, @Model.Contenuto.Collegamento" class="btn btn-outline-info">Condividi via Email <i class="fas fa-share"></i></a>
         </div>
     </div>
 </div>
