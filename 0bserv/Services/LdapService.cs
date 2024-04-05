@@ -60,8 +60,7 @@ namespace _0bserv.Services
             }
             catch (Exception ex)
             {
-                // if we get an error, it means we have a login failure.  
-                // Log specific exception  
+                throw;
             }
             return null;
         }
