@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Xml;
+using Microsoft.EntityFrameworkCore;
 
 namespace _0bserv.Pages
 {
@@ -26,7 +27,6 @@ namespace _0bserv.Pages
 
         public async Task<IActionResult> OnGet()
         {
-
             var request = _httpContextAccessor.HttpContext.Request;
             var baseUrl = $"{request.Scheme}://{request.Host}";
 
@@ -34,7 +34,8 @@ namespace _0bserv.Pages
             var currentUrl = $"{baseUrl}{request.Path}";
 
             // Utilizza l'URL completo come URI per il feed RSS
-            var feed = new SyndicationFeed("Feed RSS 0bserv", "Feed RSS 0bserv", new Uri(currentUrl)); var feedContents = _context.FeedContents.ToList(); 
+            var feed = new SyndicationFeed("Feed RSS 0bserv", "Feed RSS 0bserv", new Uri(currentUrl));
+            var feedContents = await _context.FeedContents.OrderByDescending(f => f.PublishDate).ToListAsync(); // Assicurati di utilizzare ToListAsync() per operazioni asincrone
             var items = new List<SyndicationItem>();
 
             // Creazione degli elementi del feed RSS
@@ -58,20 +59,18 @@ namespace _0bserv.Pages
             }
 
             feed.Items = items;
-            // Scrivi il feed RSS come risposta HTTP
-            var response = HttpContext.Response;
-            response.ContentType = "application/rss+xml";
 
-            using (var writer = XmlWriter.Create(response.Body, new XmlWriterSettings { Async = true }))
+            // Scrivi il feed RSS come risposta HTTP
+            var response = new MemoryStream(); // Utilizza una MemoryStream per memorizzare il contenuto XML
+            using (var writer = XmlWriter.Create(response, new XmlWriterSettings { Async = true }))
             {
                 var rssFormatter = new Rss20FeedFormatter(feed);
                 rssFormatter.WriteTo(writer);
+                await writer.FlushAsync(); // Assicurati che tutti i dati vengano scritti in modo asincrono
             }
-            return new ContentResult
-            {
-                ContentType = "application/rss+xml",
-                Content = response.Body.ToString(),
-            };
+            response.Seek(0, SeekOrigin.Begin); // Assicurati che la posizione del flusso sia impostata all'inizio
+            return File(response, "application/rss+xml"); // Restituisci il contenuto XML come file
         }
+
     }
 }
