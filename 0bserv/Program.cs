@@ -16,7 +16,7 @@ builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
    .AddNegotiate();
 builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
     .AddIdentityCookies();
-builder.Services.AddAuthentication(IISDefaults.AuthenticationScheme);
+builder.Services.AddAuthentication(IISDefaults.Ntlm);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options =>
 {
