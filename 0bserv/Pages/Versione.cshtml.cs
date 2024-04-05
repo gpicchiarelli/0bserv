@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.IO;
 
 namespace _0bserv.Pages
 {
@@ -24,13 +24,15 @@ namespace _0bserv.Pages
             Version version = Assembly.GetEntryAssembly().GetName().Version;
             string versionString = version.ToString();
 
-            // Calcola l'hash SHA-256 dell'assembly principale
+            // Ottieni il percorso dell'assembly in esecuzione
             string assemblyPath = Assembly.GetEntryAssembly().Location;
-
-            using SHA512 sha512 = System.Security.Cryptography.SHA512.Create();
-            byte[] bytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(assemblyPath));
-            string sha512Hash = Convert.ToBase64String(bytes).ToString();
-
+            string sha256Hash = string.Empty;
+            // Calcola l'hash SHA-256 del contenuto dell'assembly
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] hashBytes = sha256.ComputeHash(System.IO.File.ReadAllBytes(assemblyPath));
+                sha256Hash = BitConverter.ToString(hashBytes).Replace("-", string.Empty).ToLower();
+            }
             string environment = "Sviluppo"; // Modifica in base all'ambiente di esecuzione
 
             // Piattaforma e sistema operativo
@@ -50,7 +52,7 @@ namespace _0bserv.Pages
 
             // Visualizza le informazioni sulla pagina
             Versione = "Versione: " + versionString;
-            hashAssembly = "SHA-512 Hash: " + sha512Hash;
+            hashAssembly = "SHA-256 Hash: " + sha256Hash;
             Applicazione = $"Nome dell'applicazione: {Assembly.GetEntryAssembly().GetName().Name}";
             Ambiente = $"Ambiente di esecuzione: {environment}";
             Piattaforma = $"Piattaforma: {platform}";
