@@ -1,22 +1,119 @@
-html {
-  font-size: 14px;
+/* Impostazioni di base */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --text-color: #34495e;
+    --background-color: #ecf0f1;
 }
 
-@media (min-width: 768px) {
-  html {
+/* Navbar */
+.navbar {
+    background-color: var(--primary-color);
+}
+
+.navbar-brand {
+    color: #fff;
+    font-weight: bold;
+}
+
+.navbar-nav .nav-link {
+    color: #fff;
+}
+
+    .navbar-nav .nav-link:hover {
+        color: #f8f9fa;
+    }
+
+/* Header */
+.header {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 50px 0;
+    text-align: center;
+}
+
+    .header h1 {
+        font-size: 36px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .header p {
+        font-size: 18px;
+    }
+
+/* Cards */
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+    .card:hover {
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-text {
     font-size: 16px;
-  }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+    .btn-primary:hover {
+        background-color: #2980b9;
+        border-color: #2980b9;
+    }
+
+/* Footer */
+.footer {
+    background-color: var(--secondary-color);
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
 }
 
-body {
-  margin-bottom: 60px;
+    .footer p {
+        font-size: 14px;
+    }
+
+/* Sidebar */
+.sidebar {
+    background-color: var(--secondary-color);
+    color: #fff;
+    padding: 20px;
 }
+
+    .sidebar h3 {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .sidebar li {
+        margin-bottom: 10px;
+    }
+
+    .sidebar a {
+        color: #fff;
+        text-decoration: none;
+    }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
