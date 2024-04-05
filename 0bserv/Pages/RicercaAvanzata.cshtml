@@ -34,7 +34,7 @@ else
         @foreach (var result in Model.SearchResults)
         {
             <li>
-                <a href="@Url.Page("/DettItem", new { idd = result.Id })">
+                <a href="@Url.Page("/DettItem", new { idd = result.Id })" target="_blank">
                     @result.Title - @result.PublishDate.ToString("dd/MM/yyyy HH:mm")
                 </a>
             </li>

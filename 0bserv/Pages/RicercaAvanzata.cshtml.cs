@@ -28,6 +28,7 @@ namespace _0bserv.Pages
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
 
+        [HttpGet]
         public async Task<IActionResult> OnGet(string keyword, DateTime? startDate, DateTime? endDate, int currentPage = 1)
         {
             if (!string.IsNullOrEmpty(keyword))
@@ -75,7 +76,7 @@ namespace _0bserv.Pages
 
             return Page();
         }
-
+        [HttpPost]
         public async Task<IActionResult> OnPost()
         {
             // Recupera i parametri di ricerca
