@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 using Novell.Directory.Ldap;
 using System.DirectoryServices;
-using System.Web.Providers.Entities;
 
 namespace _0bserv.Services
 {

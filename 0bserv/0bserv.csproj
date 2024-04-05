@@ -28,7 +28,6 @@
   <ItemGroup>
 	<PackageReference Include="bootstrap" Version="5.3.3" />
 	<PackageReference Include="BootstrapBlazor" Version="8.4.0" />
-	<PackageReference Include="Microsoft.AspNet.Providers.Core" Version="2.0.0" />
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.3" />
 	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.3" />
