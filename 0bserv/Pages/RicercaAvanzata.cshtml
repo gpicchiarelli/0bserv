@@ -9,7 +9,7 @@
 <form method="post" asp-page-handler="SearchAsync" asp-page="RicercaAvanzata">
     <div class="form-group">
         <label>Parola chiave:</label>
-        <input type="text" asp-for="SearchInput.Keyword" class="form-control" />
+        <input type="text" asp-for="SearchInput.Keyword" class="form-control" value="@Model.SearchInput.Keyword" />
         <span asp-validation-for="SearchInput.Keyword" class="text-danger"></span>
     </div>
     <div class="form-group">

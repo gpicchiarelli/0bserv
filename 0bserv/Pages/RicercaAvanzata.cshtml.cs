@@ -20,6 +20,7 @@ namespace _0bserv.Pages
         {
             _context = context;
             SearchResults = new();
+            SearchInput = new SearchInputModel(); // Inizializza il modello SearchInput
         }
 
         [BindProperty]
