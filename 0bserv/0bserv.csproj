@@ -28,7 +28,10 @@
   <ItemGroup>
 	<PackageReference Include="bootstrap" Version="5.3.3" />
 	<PackageReference Include="BootstrapBlazor" Version="8.4.0" />
+	<PackageReference Include="Microsoft.AspNet.Providers.Core" Version="2.0.0" />
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.3" />
+	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.3" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3">
 	  <PrivateAssets>all</PrivateAssets>
@@ -36,6 +39,8 @@
 	</PackageReference>
 	<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.0" />
 	<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+	<PackageReference Include="Microsoft.Windows.Compatibility" Version="8.0.3" />
+	<PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="3.6.0" />
 	<PackageReference Include="System.ServiceModel.Syndication" Version="8.0.0" />
   </ItemGroup>
 
