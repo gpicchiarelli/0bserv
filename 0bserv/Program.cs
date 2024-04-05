@@ -12,11 +12,11 @@ using Microsoft.Extensions.Hosting;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
-builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-   .AddNegotiate();
-builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
-    .AddIdentityCookies();
-builder.Services.AddAuthentication(IISDefaults.Ntlm);
+builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
+builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
+builder.Services.AddAuthentication(IISDefaults.Ntlm).AddNegotiate();
+builder.Services.AddAuthentication(IISDefaults.AuthenticationScheme).AddNegotiate();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options =>
 {
@@ -31,8 +31,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.Configure<LdapConfig>(builder.Configuration.GetSection("Ldap"));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<_0bservDbContext>(options =>
-    options.UseSqlServer());
+builder.Services.AddDbContext<_0bservDbContext>(options => options.UseSqlServer());
 builder.Services.AddScoped<IAuthenticationService, LdapAuthenticationService>(); 
 builder.Services.AddHostedService<FeedService>();
 
