@@ -17,7 +17,7 @@ namespace _0bserv.Pages
 
     public class IndexModel : PageModel
     {
-        private const int ElementiPerPagina = 30; // Modifica il numero di elementi per pagina se necessario
+        private const int ElementiPerPagina = 15; // Modifica il numero di elementi per pagina se necessario
         private readonly _0bservDbContext _context;
 
         public IndexModel(_0bservDbContext context)
@@ -59,7 +59,7 @@ namespace _0bserv.Pages
                         DataPubblicazione = contenuto.PublishDate
                     };
                     // Limita la lunghezza del titolo per la visibilità
-                    nuovoContenuto.Titolo = nuovoContenuto.Titolo.Length > 50 ? nuovoContenuto.Titolo.Substring(0, 50) + "..." : nuovoContenuto.Titolo;
+                    nuovoContenuto.Titolo = nuovoContenuto.Titolo.Length > 130 ? nuovoContenuto.Titolo.Substring(0, 130) + "..." : nuovoContenuto.Titolo;
 
                     Contenuti.Add(nuovoContenuto);
                 }
