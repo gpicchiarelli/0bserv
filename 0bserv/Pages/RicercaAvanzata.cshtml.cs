@@ -1,100 +1,56 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using _0bserv.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using _0bserv.Models;
 
 namespace _0bserv.Pages
 {
     public class SearchModel : PageModel
     {
         private readonly _0bservDbContext _context;
-        private readonly IMemoryCache _cache;
+        private const int PageSize = 10; // Numero di elementi per pagina
 
-        public SearchModel(_0bservDbContext context, IMemoryCache cache)
+        public SearchModel(_0bservDbContext context)
         {
             _context = context;
-            _cache = cache;
         }
 
         [BindProperty]
         public SearchInputModel SearchInput { get; set; }
-
         public List<FeedContentModel> SearchResults { get; set; }
-        public int PaginaCorrente { get; set; }
-        public int NumeroPagine { get; set; }
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? pagina, string keyword, DateTime? startDate, DateTime? endDate)
+        public async Task<IActionResult> OnPost()
         {
-            SearchInput = new SearchInputModel
-            {
-                Keyword = keyword,
-                StartDate = startDate,
-                EndDate = endDate
-            };
+            // Recupera i parametri di ricerca
+            var keyword = SearchInput.Keyword;
+            var startDate = SearchInput.StartDate;
+            var endDate = SearchInput.EndDate;
 
-            // Esegui la ricerca
             var searchResults = await BuildQuery(keyword, startDate, endDate).ToListAsync();
 
-            // Applica la paginazione ai risultati filtrati
-            PaginaCorrente = pagina ?? 1;
-            int risultatiPerPagina = 10;
-            SearchResults = searchResults
-                .Skip((PaginaCorrente - 1) * risultatiPerPagina)
-                .Take(risultatiPerPagina)
-                .ToList();
+            // Calcola il numero totale di pagine
+            TotalPages = (int)Math.Ceiling((double)searchResults.Count / PageSize);
 
-            NumeroPagine = (int)Math.Ceiling((double)searchResults.Count / risultatiPerPagina); // Assumendo 10 risultati per pagina
+            // Imposta la pagina corrente a 1
+            CurrentPage = 1;
+
+            // Imposta i risultati della ricerca per la pagina corrente
+            SearchResults = searchResults.Take(PageSize).ToList();
 
             return Page();
-        }
-
-
-
-        public IActionResult OnPostSearch()
-        {
-            // Verifica se la keyword è vuota
-            if (string.IsNullOrWhiteSpace(SearchInput.Keyword))
-            {
-                // Se la keyword è vuota, reindirizza alla pagina iniziale
-                return RedirectToPage("/Index");
-            }
-
-            // Verifica e valorizza le date se sono nulle
-            if (!SearchInput.StartDate.HasValue)
-            {
-                SearchInput.StartDate = DateTime.Today;
-            }
-
-            if (!SearchInput.EndDate.HasValue)
-            {
-                SearchInput.EndDate = DateTime.Today;
-            }
-
-            // Costruisci l'URL con i parametri di ricerca
-            var url = Url.Page("/Search", new
-            {
-                pagina = 1,
-                keyword = SearchInput.Keyword,
-                startDate = SearchInput.StartDate,
-                endDate = SearchInput.EndDate
-            });
-
-            // Reindirizza alla pagina di ricerca con i parametri di ricerca nell'URL
-            return Redirect(url);
         }
 
         private IQueryable<FeedContentModel> BuildQuery(string keyword, DateTime? startDate, DateTime? endDate)
         {
             var query = _context.FeedContents.AsQueryable();
 
-            // Applica i filtri solo se i valori non sono nulli
+            // Applica i filtri solo se i valori non sono nulli o vuoti
             if (!string.IsNullOrEmpty(keyword))
             {
                 string keywordPattern = $"%{keyword}%";
@@ -119,12 +75,6 @@ namespace _0bserv.Pages
             query = query.OrderByDescending(f => f.PublishDate);
 
             return query;
-        }
-
-
-        private string GetCacheKey(int? pagina, string keyword, DateTime? startDate, DateTime? endDate)
-        {
-            return $"Search_{pagina}_{keyword}_{startDate?.ToString("yyyyMMdd")}_{endDate?.ToString("yyyyMMdd")}";
         }
     }
 
