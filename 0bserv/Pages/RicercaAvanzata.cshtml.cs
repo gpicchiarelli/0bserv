@@ -3,17 +3,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using _0bserv.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace _0bserv.Pages
 {
     public class SearchModel : PageModel
     {
         private readonly _0bservDbContext _context;
-        private const int PageSize = 10; // Numero di elementi per pagina
+        private const int PageSize = 15; // Numero di elementi per pagina
         public List<FeedContentModel> SearchResults { get; set; }
 
         public SearchModel(_0bservDbContext context)
@@ -34,42 +34,27 @@ namespace _0bserv.Pages
             var startDate = SearchInput.StartDate;
             var endDate = SearchInput.EndDate;
 
-            if (SearchInput.StartDate is null) 
+            // Verifica se i parametri di ricerca sono validi
+            if (string.IsNullOrWhiteSpace(keyword))
             {
-                startDate = DateTime.Now;
+                ModelState.AddModelError("SearchInput.Keyword", "Inserire un valore per il filtro");
+                return Page();
             }
-            if (SearchInput.EndDate is null) 
-            {
-                endDate = DateTime.Now;
-            }
-            // Memorizza i parametri di ricerca nella sessione
-            HttpContext.Session.SetString("Keyword", keyword);
-            HttpContext.Session.SetString("StartDate", startDate?.ToString("yyyy-MM-dd"));
-            HttpContext.Session.SetString("EndDate", endDate?.ToString("yyyy-MM-dd"));
 
+            // Applica il filtro solo se il valore di keyword non è vuoto
             var searchResults = await BuildQuery(keyword, startDate, endDate).ToListAsync();
 
-            if (searchResults.Any())
-            {
-                // Calcola il numero totale di pagine
-                TotalPages = (int)Math.Ceiling((double)searchResults.Count / PageSize);
+            // Calcola il numero totale di pagine
+            TotalPages = (int)Math.Ceiling((double)searchResults.Count / PageSize);
 
-                // Imposta la pagina corrente a 1
-                CurrentPage = 1;
+            // Imposta la pagina corrente a 1
+            CurrentPage = 1;
 
-                // Imposta i risultati della ricerca per la pagina corrente
-                SearchResults = searchResults.Take(PageSize).ToList();
-            }
-            else
-            {
-                // Se non ci sono risultati di ricerca, reimposta la lista dei risultati a una nuova lista vuota
-                SearchResults = new List<FeedContentModel>();
-            }
+            // Imposta i risultati della ricerca per la pagina corrente
+            SearchResults = searchResults.Take(PageSize).ToList();
 
             return Page();
         }
-
-
 
         private IQueryable<FeedContentModel> BuildQuery(string keyword, DateTime? startDate, DateTime? endDate)
         {
@@ -105,10 +90,9 @@ namespace _0bserv.Pages
 
     public class SearchInputModel
     {
-        [Required(ErrorMessage = "Inserire un valore per il filtro")]
+        [Required(ErrorMessage = "Il campo parola chiave è obbligatorio.")]
         public string Keyword { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public string Category { get; set; }
     }
 }
