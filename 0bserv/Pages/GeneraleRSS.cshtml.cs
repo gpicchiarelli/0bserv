@@ -1,13 +1,8 @@
-using System;
 using System.ServiceModel.Syndication;
-using System.Web;
+using System.Xml;
 using _0bserv.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Xml;
 using Microsoft.EntityFrameworkCore;
 
 namespace _0bserv.Pages
@@ -27,22 +22,22 @@ namespace _0bserv.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            var request = _httpContextAccessor.HttpContext.Request;
-            var baseUrl = $"{request.Scheme}://{request.Host}";
+            HttpRequest request = _httpContextAccessor.HttpContext.Request;
+            string baseUrl = $"{request.Scheme}://{request.Host}";
 
             // Costruisci l'URL completo dell'endpoint attuale
-            var currentUrl = $"{baseUrl}{request.Path}";
+            string currentUrl = $"{baseUrl}{request.Path}";
 
             // Utilizza l'URL completo come URI per il feed RSS
-            var feed = new SyndicationFeed("Feed RSS 0bserv", "Feed RSS 0bserv", new Uri(currentUrl));
-            var feedContents = await _context.FeedContents.OrderByDescending(f => f.PublishDate).ToListAsync(); // Assicurati di utilizzare ToListAsync() per operazioni asincrone
-            var items = new List<SyndicationItem>();
+            SyndicationFeed feed = new("Feed RSS 0bserv", "Feed RSS 0bserv", new Uri(currentUrl));
+            List<FeedContentModel> feedContents = await _context.FeedContents.OrderByDescending(f => f.PublishDate).ToListAsync(); // Assicurati di utilizzare ToListAsync() per operazioni asincrone
+            List<SyndicationItem> items = new();
 
             // Creazione degli elementi del feed RSS
-            foreach (var feedContent in feedContents)
+            foreach (FeedContentModel? feedContent in feedContents)
             {
                 // Creazione di un nuovo item del feed RSS
-                var item = new SyndicationItem
+                SyndicationItem item = new()
                 {
                     Title = new TextSyndicationContent(feedContent.Title),
                     Content = new TextSyndicationContent(feedContent.Description),
@@ -61,14 +56,14 @@ namespace _0bserv.Pages
             feed.Items = items;
 
             // Scrivi il feed RSS come risposta HTTP
-            var response = new MemoryStream(); // Utilizza una MemoryStream per memorizzare il contenuto XML
-            using (var writer = XmlWriter.Create(response, new XmlWriterSettings { Async = true }))
+            MemoryStream response = new(); // Utilizza una MemoryStream per memorizzare il contenuto XML
+            using (XmlWriter writer = XmlWriter.Create(response, new XmlWriterSettings { Async = true }))
             {
-                var rssFormatter = new Rss20FeedFormatter(feed);
+                Rss20FeedFormatter rssFormatter = new(feed);
                 rssFormatter.WriteTo(writer);
                 await writer.FlushAsync(); // Assicurati che tutti i dati vengano scritti in modo asincrono
             }
-            response.Seek(0, SeekOrigin.Begin); // Assicurati che la posizione del flusso sia impostata all'inizio
+            _ = response.Seek(0, SeekOrigin.Begin); // Assicurati che la posizione del flusso sia impostata all'inizio
             return File(response, "application/rss+xml"); // Restituisci il contenuto XML come file
         }
 
