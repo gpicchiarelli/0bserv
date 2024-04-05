@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using _0bserv.Models;
@@ -13,15 +14,16 @@ namespace _0bserv.Pages
     {
         private readonly _0bservDbContext _context;
         private const int PageSize = 10; // Numero di elementi per pagina
+        public List<FeedContentModel> SearchResults { get; set; }
 
         public SearchModel(_0bservDbContext context)
         {
             _context = context;
+            SearchResults = new();
         }
 
         [BindProperty]
         public SearchInputModel SearchInput { get; set; }
-        public List<FeedContentModel> SearchResults { get; set; }
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
 
@@ -34,17 +36,26 @@ namespace _0bserv.Pages
 
             var searchResults = await BuildQuery(keyword, startDate, endDate).ToListAsync();
 
-            // Calcola il numero totale di pagine
-            TotalPages = (int)Math.Ceiling((double)searchResults.Count / PageSize);
+            if (searchResults.Any())
+            {
+                // Calcola il numero totale di pagine
+                TotalPages = (int)Math.Ceiling((double)searchResults.Count / PageSize);
 
-            // Imposta la pagina corrente a 1
-            CurrentPage = 1;
+                // Imposta la pagina corrente a 1
+                CurrentPage = 1;
 
-            // Imposta i risultati della ricerca per la pagina corrente
-            SearchResults = searchResults.Take(PageSize).ToList();
+                // Imposta i risultati della ricerca per la pagina corrente
+                SearchResults = searchResults.Take(PageSize).ToList();
+            }
+            else
+            {
+                // Se non ci sono risultati di ricerca, reimposta la lista dei risultati a una nuova lista vuota
+                SearchResults = new List<FeedContentModel>();
+            }
 
             return Page();
         }
+
 
         private IQueryable<FeedContentModel> BuildQuery(string keyword, DateTime? startDate, DateTime? endDate)
         {
@@ -80,6 +91,7 @@ namespace _0bserv.Pages
 
     public class SearchInputModel
     {
+        [Required(ErrorMessage = "Inserire un valore per il filtro")]
         public string Keyword { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }

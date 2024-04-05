@@ -10,6 +10,7 @@
     <div class="form-group">
         <label>Parola chiave:</label>
         <input type="text" asp-for="SearchInput.Keyword" class="form-control" />
+        <span asp-validation-for="SearchInput.Keyword" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label>Data di inizio:</label>
@@ -22,7 +23,11 @@
     <button type="submit" class="btn btn-primary">Cerca</button>
 </form>
 
-@if (Model.SearchResults != null && Model.SearchResults.Any())
+@if (!Model.SearchResults.Any())
+{
+    <p>Nessun risultato trovato.</p>
+}
+else
 {
     <h3>Risultati della ricerca:</h3>
     <ul>
@@ -30,7 +35,7 @@
         {
             <li>
                 <a href="@Url.Page("/DettItem", new { idd = result.Id })">
-                    @result.Title - @result.PublishDate.ToString("dd/MM/yyyy")
+                    @result.Title - @result.PublishDate.ToString("dd/MM/yyyy HH:mm")
                 </a>
             </li>
         }
@@ -70,7 +75,7 @@
         </nav>
     }
 }
-else
-{
-    <p>Nessun risultato trovato.</p>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
