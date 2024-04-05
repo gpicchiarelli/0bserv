@@ -27,6 +27,57 @@ namespace _0bserv.Pages
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
 
+        public async Task<IActionResult> OnGet() 
+        {
+            // Recupera i parametri di ricerca
+            var keyword = SearchInput?.Keyword;
+            var startDate = SearchInput?.StartDate;
+            var endDate = SearchInput?.EndDate;
+
+            // Verifica se i parametri di ricerca sono validi
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                ModelState.AddModelError("SearchInput.Keyword", "Inserire un valore per il filtro");
+                return Page();
+            }
+
+            // Applica il filtro solo se il valore di keyword non è vuoto
+            var query = BuildQuery(keyword, startDate, endDate);
+
+            // Calcola il numero totale di risultati
+            var totalResults = await query.CountAsync();
+
+            // Calcola il numero totale di pagine
+            TotalPages = (int)Math.Ceiling((double)totalResults / PageSize);
+
+            // Imposta la pagina corrente
+            if (Request.Query.ContainsKey("CurrentPage"))
+            {
+                CurrentPage = Convert.ToInt32(Request.Query["CurrentPage"]);
+            }
+            else
+            {
+                CurrentPage = 1;
+            }
+
+            // Se la pagina corrente è maggiore del numero totale di pagine, imposta la pagina corrente all'ultima pagina
+            if (CurrentPage > TotalPages)
+            {
+                CurrentPage = TotalPages;
+            }
+
+            // Se la pagina corrente è minore di 1, imposta la pagina corrente alla prima pagina
+            if (CurrentPage < 1)
+            {
+                CurrentPage = 1;
+            }
+
+            // Seleziona solo i risultati corrispondenti alla pagina corrente
+            SearchResults = await query.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToListAsync();
+
+            return Page();
+        }
+
         public async Task<IActionResult> OnPost()
         {
             // Recupera i parametri di ricerca
@@ -42,19 +93,42 @@ namespace _0bserv.Pages
             }
 
             // Applica il filtro solo se il valore di keyword non è vuoto
-            var searchResults = await BuildQuery(keyword, startDate, endDate).ToListAsync();
+            var query = BuildQuery(keyword, startDate, endDate);
+
+            // Calcola il numero totale di risultati
+            var totalResults = await query.CountAsync();
 
             // Calcola il numero totale di pagine
-            TotalPages = (int)Math.Ceiling((double)searchResults.Count / PageSize);
+            TotalPages = (int)Math.Ceiling((double)totalResults / PageSize);
 
-            // Imposta la pagina corrente a 1
-            CurrentPage = 1;
+            // Imposta la pagina corrente
+            if (Request.Query.ContainsKey("CurrentPage"))
+            {
+                CurrentPage = Convert.ToInt32(Request.Query["CurrentPage"]);
+            }
+            else
+            {
+                CurrentPage = 1;
+            }
 
-            // Imposta i risultati della ricerca per la pagina corrente
-            SearchResults = searchResults.Take(PageSize).ToList();
+            // Se la pagina corrente è maggiore del numero totale di pagine, imposta la pagina corrente all'ultima pagina
+            if (CurrentPage > TotalPages)
+            {
+                CurrentPage = TotalPages;
+            }
+
+            // Se la pagina corrente è minore di 1, imposta la pagina corrente alla prima pagina
+            if (CurrentPage < 1)
+            {
+                CurrentPage = 1;
+            }
+
+            // Seleziona solo i risultati corrispondenti alla pagina corrente
+            SearchResults = await query.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToListAsync();
 
             return Page();
         }
+
 
         private IQueryable<FeedContentModel> BuildQuery(string keyword, DateTime? startDate, DateTime? endDate)
         {

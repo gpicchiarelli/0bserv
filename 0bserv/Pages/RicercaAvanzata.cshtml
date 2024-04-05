@@ -48,27 +48,32 @@ else
                 @if (Model.CurrentPage > 1)
                 {
                     <li class="page-item">
-                        <a class="page-link" href="@Url.Page("./RicercaAvanzata", new { CurrentPage = 1 })">Prima</a>
+                        <a class="page-link" asp-page="./RicercaAvanzata" asp-page-handler="SearchAsync" asp-route-CurrentPage="1"
+                           asp-route-Keyword="@Model.SearchInput.Keyword" asp-route-StartDate="@Model.SearchInput.StartDate" asp-route-EndDate="@Model.SearchInput.EndDate">Prima</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="@Url.Page("./RicercaAvanzata", new { CurrentPage = Model.CurrentPage - 1 })">Precedente</a>
+                        <a class="page-link" asp-page="./RicercaAvanzata" asp-page-handler="SearchAsync" asp-route-CurrentPage="@(Model.CurrentPage - 1)"
+                           asp-route-Keyword="@Model.SearchInput.Keyword" asp-route-StartDate="@Model.SearchInput.StartDate" asp-route-EndDate="@Model.SearchInput.EndDate">Precedente</a>
                     </li>
                 }
 
                 @for (int i = Math.Max(1, Model.CurrentPage - 5); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 5); i++)
                 {
                     <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
-                        <a class="page-link" href="@Url.Page("./RicercaAvanzata", new { CurrentPage = i })">@i</a>
+                        <a class="page-link" asp-page="./RicercaAvanzata" asp-page-handler="SearchAsync" asp-route-CurrentPage="@i"
+                           asp-route-Keyword="@Model.SearchInput.Keyword" asp-route-StartDate="@Model.SearchInput.StartDate" asp-route-EndDate="@Model.SearchInput.EndDate">@i</a>
                     </li>
                 }
 
                 @if (Model.CurrentPage < Model.TotalPages)
                 {
                     <li class="page-item">
-                        <a class="page-link" href="@Url.Page("./RicercaAvanzata", new { CurrentPage = Model.CurrentPage + 1 })">Successiva</a>
+                        <a class="page-link" asp-page="./RicercaAvanzata" asp-page-handler="SearchAsync" asp-route-CurrentPage="@(Model.CurrentPage + 1)"
+                           asp-route-Keyword="@Model.SearchInput.Keyword" asp-route-StartDate="@Model.SearchInput.StartDate" asp-route-EndDate="@Model.SearchInput.EndDate">Successiva</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="@Url.Page("./RicercaAvanzata", new { CurrentPage = Model.TotalPages })">Ultima</a>
+                        <a class="page-link" asp-page="./RicercaAvanzata" asp-page-handler="SearchAsync" asp-route-CurrentPage="@Model.TotalPages"
+                           asp-route-Keyword="@Model.SearchInput.Keyword" asp-route-StartDate="@Model.SearchInput.StartDate" asp-route-EndDate="@Model.SearchInput.EndDate">Ultima</a>
                     </li>
                 }
             </ul>
