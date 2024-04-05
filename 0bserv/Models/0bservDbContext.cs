@@ -7,6 +7,8 @@ namespace _0bserv.Models
     {
         public DbSet<FeedModel> RssFeeds { get; set; }
         public DbSet<FeedContentModel> FeedContents { get; set; }
+        public DbSet<CredenzialiEmail> CredenzialiEmails { get; set; }
+
         private readonly IConfiguration _configuration;
 
         public _0bservDbContext(DbContextOptions<_0bservDbContext> options, IConfiguration configuration) : base(options)

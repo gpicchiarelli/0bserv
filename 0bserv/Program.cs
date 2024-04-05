@@ -33,7 +33,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<_0bservDbContext>(options => options.UseSqlServer());
 //builder.Services.AddDbContext<_0bservDbContext>(options => options.UseMySQL());
 
-builder.Services.AddScoped<IAuthenticationService, LdapAuthenticationService>(); 
+builder.Services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
+builder.Services.AddScoped<IPasswordSicuraService, PasswordSicuraService>();
+builder.Services.AddScoped<CredenzialiMailService>();
 builder.Services.AddHostedService<FeedService>();
 
 WebApplication app = builder.Build();
