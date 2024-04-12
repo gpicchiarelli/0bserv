@@ -14,7 +14,7 @@
 - Gestisce tutti i dati tramite un database relazionale.
 
 ## Installazione
-Prima di tutto, assicurati di avere installato .NET Core SDK sul tuo sistema. Puoi scaricarlo da qui.
+Prima di tutto, assicurati di avere installato .NET Core SDK sul tuo sistema.
 
 Clona il repository:
  ```bash
